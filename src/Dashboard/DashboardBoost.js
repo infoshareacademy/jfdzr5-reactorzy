@@ -15,8 +15,58 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import styled from "styled-components";
 
-const dashboardInfo = styled.div`
-  height: 100%;
+const CointainerDashboardInfo = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const DashboardInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 10%;
+  padding-left: 2%;
+`;
+
+const ContainerName = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10%;
+`;
+
+const Name = styled.h1`
+  font-family: "Audiowide", cursive;
+  font-size: 62px;
+  letter-spacing: 2px;
+  margin: 0;
+  line-height: 100%;
+`;
+
+const SubTitle = styled.p`
+  margin: 0;
+  line-height: 100%;
+  font-size: 10px;
+`;
+
+const InformationDashboard = styled.p`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  font-size: 22px;
+`;
+
+const Icon = styled.i`
+  font-size: 44px;
+  padding-right: 12px;
+  color: #1565c0;
+`;
+
+const BoldInformation = styled.span`
+  font-weight: bold;
+  padding-right: 12px;
 `;
 
 function Copyright(props) {
@@ -28,8 +78,11 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link
+        color="inherit"
+        href="https://github.com/infoshareacademy/jfdzr5-reactorzy"
+      >
+        GitHub Repository
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -60,32 +113,37 @@ export default function SignInSide() {
           sm={4}
           md={7}
           sx={{
-            // backgroundImage: "url(https://source.unsplash.com/random)",
             backgroundColor: "#F0F2F5",
-            // backgroundRepeat: "no-repeat",
-            // backgroundColor: (t) =>
-            //   t.palette.mode === "light"
-            //     ? t.palette.grey[50]
-            //     : t.palette.grey[900],
-            // backgroundSize: "cover",
-            // backgroundPosition: "center",
           }}
         >
-          <dashboardInfo className="about-app">
-            <h1>Koffee</h1>
-            <p>
-              powered by <strong>Reactorzy</strong>
-            </p>
-            <p>
-              <span>6420</span> napisanych postów
-            </p>
-            <p>
-              <span>526980</span> napisanych komentarzy
-            </p>
-            <p>
-              <span>11</span> zarejestrowanych użytkowników
-            </p>
-          </dashboardInfo>
+          <CointainerDashboardInfo>
+            <DashboardInfo>
+              <ContainerName>
+                <Name>Koffee</Name>
+                <SubTitle>
+                  powered by <strong>Reactorzy</strong>
+                </SubTitle>
+              </ContainerName>
+              <InformationDashboard>
+                <Icon>
+                  <i className="fas fa-mail-bulk"></i>
+                </Icon>
+                <BoldInformation>6420</BoldInformation>written posts
+              </InformationDashboard>
+              <InformationDashboard>
+                <Icon>
+                  <i className="fas fa-comments"></i>
+                </Icon>
+                <BoldInformation>526980</BoldInformation>written comments
+              </InformationDashboard>
+              <InformationDashboard>
+                <Icon>
+                  <i className="fas fa-users"></i>
+                </Icon>
+                <BoldInformation>11</BoldInformation> registered users
+              </InformationDashboard>
+            </DashboardInfo>
+          </CointainerDashboardInfo>
         </Grid>
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
