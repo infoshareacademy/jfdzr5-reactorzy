@@ -1,6 +1,4 @@
-// import { Dashboard } from "./Dashboard/Dashboard";
-
-import SignInSide from "./Dashboard/DashboardBoost";
+import SignInSide from "./Dashboard/Dashboard";
 
 function App() {
   return (
