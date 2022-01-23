@@ -14,10 +14,7 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
-import { auth } from "../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
-
-// const auth = getAuth();
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const CointainerDashboardInfo = styled.div`
   display: flex;
@@ -103,6 +100,7 @@ export default function SignInSide() {
     // eslint-disable-next-line no-console
     const email = data.get("email");
     const password = data.get("password");
+    const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in

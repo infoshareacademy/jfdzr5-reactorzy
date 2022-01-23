@@ -14,7 +14,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { NavLink } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase";
+import { getAuth } from "firebase/auth";
 
 function Copyright(props) {
   return (
@@ -39,6 +39,7 @@ const theme = createTheme();
 function SignUp() {
   const handleSubmit = (event) => {
     event.preventDefault();
+    const auth = getAuth();
     const data = new FormData(event.currentTarget);
     const email = data.get("email");
     const password = data.get("password");

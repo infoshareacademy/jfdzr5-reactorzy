@@ -1,6 +1,6 @@
 import SignInSide from "./Dashboard/Dashboard";
 import { Routes, Route } from "react-router-dom";
-import SignUp from "./Dashboard/signup-logikaFirebase";
+import SignUp from "./Dashboard/signup";
 
 function App() {
   return (
