@@ -1,14 +1,9 @@
-import SignInSide from "./Dashboard/Dashboard";
-import { Routes, Route } from "react-router-dom";
-import SignUp from "./Dashboard/signup";
+import { Content } from "./content";
 
 function App() {
   return (
     <>
-      <Routes>
-        <Route path="/" element={<SignInSide />} />
-        <Route path="/sign-up" element={<SignUp />} />
-      </Routes>
+      <Content />
     </>
   );
 }

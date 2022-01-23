@@ -16,11 +16,23 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { getAuth } from "firebase/auth";
 import { Copyright } from "../../common/copyright";
+import styled from "styled-components";
+import { useState } from "react";
 
 const theme = createTheme();
 
+const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 5%;
+  font-size: 20px;
+  color: red;
+`;
+
 function SignUp() {
   const navigate = useNavigate();
+  const [IsError, setIsError] = useState("false");
+  const [ErrorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -37,7 +49,16 @@ function SignUp() {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        // ..
+        console.log(errorMessage);
+        console.log(errorCode);
+
+        setErrorMessage(
+          error.message.includes("email")
+            ? "Please provide a valid email adress!"
+            : "Password must be at least 6 characters long"
+        );
+
+        setIsError(true);
       });
   };
 
@@ -59,6 +80,7 @@ function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
+          <ErrorContainer>{ErrorMessage}</ErrorContainer>
           <Box
             component="form"
             noValidate
