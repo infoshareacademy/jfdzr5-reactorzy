@@ -1,6 +1,6 @@
-import SignInSide from "../Dashboard/Dashboard";
+import SignInSide from "./signin";
 import { Routes, Route } from "react-router-dom";
-import SignUp from "../Dashboard/signup";
+import SignUp from "./signup";
 
 export const Content = () => {
   return (
