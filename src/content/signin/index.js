@@ -7,65 +7,25 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import SignInForm from "./SignInForm";
+import { useState } from "react";
+import DashboardData from "./DashboardData";
 import styled from "styled-components";
 
-const ContainerDashboardInfo = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const DashboardInfo = styled.div`
+const ErrorContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 10%;
-  padding-left: 2%;
-`;
-
-const ContainerName = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 10%;
-`;
-
-const Name = styled.h1`
-  font-family: "Audiowide", cursive;
-  font-size: 62px;
-  letter-spacing: 2px;
-  margin: 0;
-  line-height: 100%;
-`;
-
-const SubTitle = styled.p`
-  margin: 0;
-  line-height: 100%;
-  font-size: 10px;
-`;
-
-const InformationDashboard = styled.p`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  font-size: 22px;
-`;
-
-const Icon = styled.i`
-  font-size: 44px;
-  padding-right: 12px;
-  color: #1565c0;
-`;
-
-const BoldInformation = styled.span`
-  font-weight: bold;
-  padding-right: 12px;
+  margin-top: 1%;
+  font-size: 20px;
+  color: red;
+  text-align: center;
 `;
 
 const theme = createTheme();
 
 export default function SignInSide() {
+  const [failedAuth, setFailedAuth] = useState(false);
+
   return (
     <ThemeProvider theme={theme}>
       <Grid container component="main" sx={{ height: "100vh" }}>
@@ -79,34 +39,7 @@ export default function SignInSide() {
             backgroundColor: "#F0F2F5",
           }}
         >
-          <ContainerDashboardInfo>
-            <DashboardInfo>
-              <ContainerName>
-                <Name>Koffee</Name>
-                <SubTitle>
-                  powered by <strong>Reactorzy</strong>
-                </SubTitle>
-              </ContainerName>
-              <InformationDashboard>
-                <Icon>
-                  <i className="fas fa-mail-bulk"></i>
-                </Icon>
-                <BoldInformation>6420</BoldInformation>written posts
-              </InformationDashboard>
-              <InformationDashboard>
-                <Icon>
-                  <i className="fas fa-comments"></i>
-                </Icon>
-                <BoldInformation>526980</BoldInformation>written comments
-              </InformationDashboard>
-              <InformationDashboard>
-                <Icon>
-                  <i className="fas fa-users"></i>
-                </Icon>
-                <BoldInformation>11</BoldInformation> registered users
-              </InformationDashboard>
-            </DashboardInfo>
-          </ContainerDashboardInfo>
+          <DashboardData />
         </Grid>
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
@@ -124,6 +57,12 @@ export default function SignInSide() {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
+            {failedAuth && (
+              <ErrorContainer>
+                You have entered incorrect email/password
+              </ErrorContainer>
+            )}
+            <SignInForm setFailedAuth={setFailedAuth} />
           </Box>
         </Grid>
       </Grid>

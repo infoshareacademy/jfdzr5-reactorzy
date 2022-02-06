@@ -10,7 +10,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-const SignInForm = () => {
+const SignInForm = ({ setFailedAuth }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -24,7 +24,9 @@ const SignInForm = () => {
         console.log(user);
         // ...
       })
-      .catch((error) => {});
+      .catch((error) => {
+        setFailedAuth(true);
+      });
   };
   return (
     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
