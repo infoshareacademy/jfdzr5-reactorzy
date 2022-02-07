@@ -8,23 +8,14 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SignInForm from "./SignInForm";
-import { useState } from "react";
 import DashboardData from "./DashboardData";
-import styled from "styled-components";
-
-const ErrorContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 1%;
-  font-size: 20px;
-  color: red;
-  text-align: center;
-`;
+import ForgotPasswordForm from "./forgot-password";
+import { useState } from "react";
 
 const theme = createTheme();
 
 export default function SignInSide() {
-  const [failedAuth, setFailedAuth] = useState(false);
+  const [forgotPasswordState, setForgotPasswordState] = useState(false);
 
   return (
     <ThemeProvider theme={theme}>
@@ -55,14 +46,15 @@ export default function SignInSide() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              {forgotPasswordState ? "Forgot Password" : "Sign in"}
             </Typography>
-            {failedAuth && (
-              <ErrorContainer>
-                You have entered incorrect email/password
-              </ErrorContainer>
+            {forgotPasswordState ? (
+              <ForgotPasswordForm
+                setForgotPasswordState={setForgotPasswordState}
+              />
+            ) : (
+              <SignInForm setForgotPasswordState={setForgotPasswordState} />
             )}
-            <SignInForm setFailedAuth={setFailedAuth} />
           </Box>
         </Grid>
       </Grid>
