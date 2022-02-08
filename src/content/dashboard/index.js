@@ -7,15 +7,25 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import SignInForm from "./SignInForm";
+import SignInForm from "./signin/SignInForm";
 import DashboardData from "./DashboardData";
-import ForgotPasswordForm from "./forgot-password";
-import { useState } from "react";
+import ForgotPasswordForm from "./signin/forgot-password";
+import { useState, useEffect } from "react";
+import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 
 const theme = createTheme();
 
 export default function SignInSide() {
+  const db = getFirestore();
   const [forgotPasswordState, setForgotPasswordState] = useState(false);
+  const [totalUsersRegistered, setTotalUsersRegistered] = useState();
+
+  useEffect(() => {
+    const totalUsersRef = doc(db, "users", "userCount");
+    onSnapshot(totalUsersRef, (doc) => {
+      setTotalUsersRegistered(doc.data().registered);
+    });
+  });
 
   return (
     <ThemeProvider theme={theme}>
@@ -30,7 +40,7 @@ export default function SignInSide() {
             backgroundColor: "#F0F2F5",
           }}
         >
-          <DashboardData />
+          <DashboardData totalUsersRegistered={totalUsersRegistered} />
         </Grid>
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box

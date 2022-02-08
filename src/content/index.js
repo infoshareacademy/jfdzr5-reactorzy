@@ -1,4 +1,4 @@
-import SignInSide from "./dashboard/signin";
+import SignInSide from "./dashboard";
 import { Routes, Route } from "react-router-dom";
 import SignUp from "./dashboard/signup";
 

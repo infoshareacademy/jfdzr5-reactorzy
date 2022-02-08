@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -13,20 +13,34 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
+import { getFirestore, doc, updateDoc, onSnapshot } from "firebase/firestore";
 
 const SignupForm = ({ setErrorMessage }) => {
   const navigate = useNavigate();
+  const db = getFirestore();
+  const totalUsers = useRef(0);
 
-  const handleSubmit = (event) => {
+  useEffect(() => {
+    const totalUsersRef = doc(db, "users", "userCount");
+    onSnapshot(totalUsersRef, (doc) => {
+      totalUsers.current = doc.data().registered;
+    });
+  });
+
+  console.log(totalUsers.current);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    const db = getFirestore();
     const auth = getAuth();
     const data = new FormData(event.currentTarget);
     const email = data.get("email");
     const password = data.get("password");
     const username = data.get("username");
+    const totalUsersRef = doc(db, "users", "userCount");
 
     // Perform signup validation
-    const passCheck = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6}$/;
+    const passCheck = /^(?=.*[0-9])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
 
     if (username.length >= 4) {
       if (validator.isEmail(email)) {
@@ -39,6 +53,11 @@ const SignupForm = ({ setErrorMessage }) => {
                 updateProfile(user, { displayName: username });
                 console.log(user);
                 navigate("/");
+              })
+              .then(() => {
+                updateDoc(totalUsersRef, {
+                  registered: totalUsers.current + 1,
+                });
               })
               .catch((error) => {
                 // nothing
@@ -59,13 +78,7 @@ const SignupForm = ({ setErrorMessage }) => {
     );
   };
   return (
-    <Box
-      component="form"
-      noValidate
-      setErrorMessage={setErrorMessage}
-      onSubmit={handleSubmit}
-      sx={{ mt: 3 }}
-    >
+    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField

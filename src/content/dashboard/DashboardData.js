@@ -55,7 +55,9 @@ const BoldInformation = styled.span`
   padding-right: 12px;
 `;
 
-const DashboardData = () => {
+// To-do: Add animation to counters
+
+const DashboardData = ({ totalUsersRegistered }) => {
   return (
     <ContainerDashboardInfo>
       <DashboardInfo>
@@ -81,7 +83,8 @@ const DashboardData = () => {
           <Icon>
             <i className="fas fa-users"></i>
           </Icon>
-          <BoldInformation>11</BoldInformation> registered users
+          <BoldInformation>{totalUsersRegistered}</BoldInformation> registered
+          users
         </InformationDashboard>
       </DashboardInfo>
     </ContainerDashboardInfo>
