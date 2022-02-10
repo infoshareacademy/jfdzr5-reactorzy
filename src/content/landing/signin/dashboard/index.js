@@ -7,9 +7,9 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import SignInForm from "./signin/SignInForm";
-import DashboardData from "./DashboardData";
-import ForgotPasswordForm from "./signin/forgot-password";
+import SignInForm from "../SignInForm";
+import DashboardData from "../../DashboardData";
+import ForgotPasswordForm from "../forgot-password";
 import { useState, useEffect } from "react";
 import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 
@@ -20,6 +20,7 @@ export default function SignInSide() {
   const [forgotPasswordState, setForgotPasswordState] = useState(false);
   const [totalUsersRegistered, setTotalUsersRegistered] = useState();
 
+  //Todo: add tracking for messages and posts written
   useEffect(() => {
     const totalUsersRef = doc(db, "users", "userCount");
     onSnapshot(totalUsersRef, (doc) => {
