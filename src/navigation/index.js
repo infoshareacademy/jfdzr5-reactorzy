@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -21,7 +22,6 @@ const Name = styled.h1`
   line-height: 100%;
 `;
 
-const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Logout"];
 
 export const Navigation = () => {
@@ -73,6 +73,18 @@ export const Navigation = () => {
             >
               {settings.map((setting) => {
                 console.log(setting);
+                if (setting === "Profile") {
+                  return (
+                    <MenuItem
+                      key={setting}
+                      onClick={handleCloseUserMenu}
+                      component={Link}
+                      to="/user"
+                    >
+                      <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                  );
+                }
                 return (
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
                     <Typography textAlign="center">{setting}</Typography>
