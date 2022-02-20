@@ -21,6 +21,22 @@ const AvatarContainer = styled.div`
 
 export const UserProfile = () => {
   const [editMode, changeEditMode] = useState(false);
+  const [aboutUser, setAboutUser] = useState({
+    name: "Tonald Drump",
+    technologies: "HTML, CSS, JavaScript, React, Firebase, Redux, Git, GitHub",
+    about: `Hi! I was a president of US. Some time ago I decided to change my way and become Front-End Developer.`,
+  });
+
+  const { name, about, technologies } = aboutUser;
+
+  const handleChangeAboutMe = (event) => {
+    if (editMode) {
+      setAboutUser({
+        ...aboutUser,
+        [event.target.name]: event.target.value,
+      });
+    }
+  };
 
   const handleEditMode = () => {
     if (!editMode) {
@@ -41,23 +57,47 @@ export const UserProfile = () => {
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRN5NS06Hx9iCXyqZft9AFCZHyJK-C5vloFn-m8PsE8w0so-W3yov3MG2krSS411e5m5fQ&usqp=CAU"
           />
         </AvatarContainer>
-        <div style={{ flexGrow: 1 }}>
-          <Typography variant="h2" align="center">
-            Tonald Drump
-          </Typography>
+        <div
+          style={{
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px",
+          }}
+        >
+          <TextField
+            onChange={handleChangeAboutMe}
+            name="name"
+            variant="standard"
+            fullWidth={true}
+            value={name}
+            inputProps={{
+              style: {
+                fontSize: 40,
+                textAlign: "center",
+                backgroundColor: editMode ? "rgb(232, 232, 232" : "inherit",
+                readOnly: editMode ? false : true,
+              },
+            }}
+          />
           <TextContainer>
             <Typography variant="h4" align="center">
               My technologies
             </Typography>
             <TextField
-              hiddenLabel
-              id="filled-hidden-label-normal"
-              variant={editMode ? "filled" : "outlined"}
+              onChange={handleChangeAboutMe}
+              name="technologies"
+              variant="standard"
               fullWidth={true}
-              value="HTML, CSS, JavaScript, React, Firebase, Redux, Git, GitHub"
+              value={technologies}
               multiline
-              readOnly
-              sx={{ borderColor: "yellow" }}
+              inputProps={{
+                style: {
+                  textAlign: "center",
+                  backgroundColor: editMode ? "rgb(232, 232, 232" : "inherit",
+                  readOnly: editMode ? false : true,
+                },
+              }}
             />
           </TextContainer>
           <TextContainer>
@@ -65,14 +105,19 @@ export const UserProfile = () => {
               About me
             </Typography>
             <TextField
-              hiddenLabel
-              id="filled-hidden-label-normal"
-              variant="outlined"
+              onChange={handleChangeAboutMe}
+              name="about"
+              variant="standard"
               fullWidth={true}
-              value=" Hi! I was a president of US. Some time ago I decided to change
-                my way and become Front-End Developer."
+              value={about}
               multiline
-              readOnly
+              inputProps={{
+                style: {
+                  textAlign: "center",
+                  backgroundColor: editMode ? "rgb(232, 232, 232" : "inherit",
+                  readOnly: editMode ? false : true,
+                },
+              }}
             />
           </TextContainer>
         </div>
