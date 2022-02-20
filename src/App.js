@@ -1,11 +1,16 @@
 import { Content } from "./content";
 import { UserContextProvider } from "./services/user-context";
+import { Navigation } from "./navigation";
+import { Wrapper } from "./common/wrapper";
 
 function App() {
   return (
     <>
       <UserContextProvider>
-        <Content />
+        <Navigation />
+        <Wrapper>
+          <Content />
+        </Wrapper>
       </UserContextProvider>
     </>
   );
