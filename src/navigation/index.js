@@ -13,6 +13,8 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import styled from "styled-components";
+// Firebase
+import { signOut, getAuth } from "firebase/auth";
 
 const Name = styled.h1`
   font-family: "Audiowide", cursive;
@@ -39,6 +41,12 @@ export const Navigation = () => {
   };
 
   const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const auth = getAuth();
+  const handleLogOut = () => {
+    signOut(auth);
     setAnchorElUser(null);
   };
 
@@ -98,12 +106,18 @@ export const Navigation = () => {
                         <Typography textAlign="center">{setting}</Typography>
                       </MenuItem>
                     );
+                  } else if (setting === "Logout") {
+                    return (
+                      <MenuItem
+                        key={setting}
+                        onClick={handleLogOut}
+                        component={Link}
+                        to="/"
+                      >
+                        <Typography textAlign="center">{setting}</Typography>
+                      </MenuItem>
+                    );
                   }
-                  return (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center">{setting}</Typography>
-                    </MenuItem>
-                  );
                 })}
               </Menu>
             </Box>

@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import PageviewIcon from "@mui/icons-material/Pageview";
 import styled from "styled-components";
-import { green, pink } from "@mui/material/colors";
+import { pink } from "@mui/material/colors";
 import "./userView.css";
 
 const TextContainer = styled.div`
