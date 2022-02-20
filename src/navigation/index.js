@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useUserContext } from "../services/user-context";
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -29,6 +30,8 @@ export const Navigation = () => {
     navigate("/");
   };
 
+  const { user } = useUserContext();
+
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -39,7 +42,7 @@ export const Navigation = () => {
     setAnchorElUser(null);
   };
 
-  return (
+  return user ? (
     <>
       <div style={{ height: "85px", zIndex: "-999" }}></div>
       <AppBar position="fixed">
@@ -108,5 +111,7 @@ export const Navigation = () => {
         </Container>
       </AppBar>
     </>
+  ) : (
+    <></>
   );
 };
