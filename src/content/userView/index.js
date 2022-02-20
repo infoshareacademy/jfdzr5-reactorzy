@@ -4,7 +4,9 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
+import PageviewIcon from "@mui/icons-material/Pageview";
 import styled from "styled-components";
+import { green, pink } from "@mui/material/colors";
 import "./userView.css";
 
 const TextContainer = styled.div`
@@ -56,6 +58,19 @@ export const UserProfile = () => {
             alt="avatar"
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRN5NS06Hx9iCXyqZft9AFCZHyJK-C5vloFn-m8PsE8w0so-W3yov3MG2krSS411e5m5fQ&usqp=CAU"
           />
+
+          <div>
+            <label
+              htmlFor="changePhoto"
+              style={{ cursor: "pointer" }}
+              title="Change Photo"
+            >
+              <Avatar sx={{ bgcolor: pink[500] }}>
+                <PageviewIcon />
+              </Avatar>
+            </label>
+            <input style={{ display: "none" }} id="changePhoto" type="file" />
+          </div>
         </AvatarContainer>
         <div
           style={{
