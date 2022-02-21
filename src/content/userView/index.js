@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -8,6 +8,10 @@ import PageviewIcon from "@mui/icons-material/Pageview";
 import styled from "styled-components";
 import { pink } from "@mui/material/colors";
 import "./userView.css";
+import { useUserContext } from "../../services/user-context";
+import { doc, updateDoc, getFirestore } from "firebase/firestore";
+
+const db = getFirestore();
 
 const TextContainer = styled.div`
   margin-bottom: 10px;
@@ -22,6 +26,10 @@ const AvatarContainer = styled.div`
 `;
 
 export const UserProfile = () => {
+  const { user } = useUserContext();
+  console.log("User =>", user);
+  console.log("useUserContext =>", useUserContext());
+
   const [editMode, changeEditMode] = useState(false);
   const [aboutUser, setAboutUser] = useState({
     name: "Tonald Drump",
@@ -31,7 +39,7 @@ export const UserProfile = () => {
 
   const { name, about, technologies } = aboutUser;
 
-  const handleChangeAboutMe = (event) => {
+  const handleChangeAboutMe = async (event) => {
     if (editMode) {
       setAboutUser({
         ...aboutUser,
@@ -40,10 +48,16 @@ export const UserProfile = () => {
     }
   };
 
-  const handleEditMode = () => {
+  const handleEditMode = async () => {
     if (!editMode) {
       changeEditMode(true);
     } else if (editMode) {
+      const userDetails = doc(db, "userDetails", user.uid);
+      await updateDoc(userDetails, {
+        name: name,
+        technologies: technologies,
+        about: about,
+      });
       changeEditMode(false);
     }
     console.log(editMode);
