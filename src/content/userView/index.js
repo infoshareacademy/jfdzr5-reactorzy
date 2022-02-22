@@ -31,27 +31,28 @@ export const UserProfile = () => {
   const [aboutUser, setAboutUser] = useState({
     name: "",
     technologies: "",
-    about: ``,
+    about: "",
   });
 
   const { name, about, technologies } = aboutUser;
 
-  useEffect(() => {
-    const getDataFromFirebase = async (usero) => {
-      const docRef = await doc(db, "userDetails", usero);
-      const docSnap = await getDoc(docRef);
-      setAboutUser({
-        name: docSnap.data().name,
-        technologies: docSnap.data().technologies,
-        about: docSnap.data().about,
-      });
-    };
+  const getDataFromFirebase = async (usero) => {
+    const docRef = await doc(db, "userDetails", usero);
+    const docSnap = await getDoc(docRef);
+    setAboutUser({
+      name: docSnap.data().name,
+      technologies: docSnap.data().technologies,
+      about: docSnap.data().about,
+    });
+  };
 
+  useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const uid = user.uid;
         getDataFromFirebase(uid);
+        console.log("keep user? Yes! :):):)");
       } else {
         console.log("keep user? NO!!!!!!!!!!!");
       }
@@ -74,8 +75,8 @@ export const UserProfile = () => {
       const userDetails = doc(db, "userDetails", user.uid);
       await updateDoc(userDetails, {
         name: name,
-        technologies: technologies,
-        about: about,
+        technologies: technologies ? technologies : "",
+        about: about ? about : "",
       });
       changeEditMode(false);
     }
@@ -89,7 +90,7 @@ export const UserProfile = () => {
           <Avatar
             style={{ width: "300px", height: "300px" }}
             alt="avatar"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRN5NS06Hx9iCXyqZft9AFCZHyJK-C5vloFn-m8PsE8w0so-W3yov3MG2krSS411e5m5fQ&usqp=CAU"
+            src=""
           />
 
           <div>
