@@ -9,9 +9,9 @@ import styled from "styled-components";
 import { pink } from "@mui/material/colors";
 import "./userView.css";
 import { useUserContext } from "../../services/user-context";
-import { doc, updateDoc, getFirestore } from "firebase/firestore";
-
-const db = getFirestore();
+import { doc, updateDoc, getFirestore, getDoc } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { db } from "../../index";
 
 const TextContainer = styled.div`
   margin-bottom: 10px;
@@ -27,17 +27,36 @@ const AvatarContainer = styled.div`
 
 export const UserProfile = () => {
   const { user } = useUserContext();
-  console.log("User =>", user);
-  console.log("useUserContext =>", useUserContext());
-
   const [editMode, changeEditMode] = useState(false);
   const [aboutUser, setAboutUser] = useState({
-    name: "Tonald Drump",
-    technologies: "HTML, CSS, JavaScript, React, Firebase, Redux, Git, GitHub",
-    about: `Hi! I was a president of US. Some time ago I decided to change my way and become Front-End Developer.`,
+    name: "",
+    technologies: "",
+    about: ``,
   });
 
   const { name, about, technologies } = aboutUser;
+
+  useEffect(() => {
+    const getDataFromFirebase = async (usero) => {
+      const docRef = await doc(db, "userDetails", usero);
+      const docSnap = await getDoc(docRef);
+      setAboutUser({
+        name: docSnap.data().name,
+        technologies: docSnap.data().technologies,
+        about: docSnap.data().about,
+      });
+    };
+
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        getDataFromFirebase(uid);
+      } else {
+        console.log("keep user? NO!!!!!!!!!!!");
+      }
+    });
+  }, []);
 
   const handleChangeAboutMe = async (event) => {
     if (editMode) {
