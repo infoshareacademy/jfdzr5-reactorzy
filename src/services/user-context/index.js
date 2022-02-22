@@ -6,6 +6,7 @@ export const UserContext = createContext(null);
 
 export const UserContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   // const [avatarUrl, setAvatarUrl] = useState(null);
 
   useEffect(() => {
@@ -13,6 +14,7 @@ export const UserContextProvider = ({ children }) => {
 
     onAuthStateChanged(auth, (userData) => {
       setUser(userData);
+      setIsLoading(false);
 
       // if (userData) {
       //     const storage = getStorage();
@@ -30,6 +32,7 @@ export const UserContextProvider = ({ children }) => {
     <UserContext.Provider
       value={{
         user,
+        isLoading,
         // avatarUrl,
         // setAvatarUrl
       }}
