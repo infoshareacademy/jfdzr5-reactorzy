@@ -52,9 +52,9 @@ export const UserProfile = () => {
       if (user) {
         const uid = user.uid;
         getDataFromFirebase(uid);
-        console.log("keep user? Yes! :):):)");
+        // console.log("keep user? Yes! :):):)");
       } else {
-        console.log("keep user? NO!!!!!!!!!!!");
+        // console.log("keep user? NO!!!!!!!!!!!");
       }
     });
   }, []);
