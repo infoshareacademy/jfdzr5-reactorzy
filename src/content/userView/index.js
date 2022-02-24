@@ -80,7 +80,7 @@ export const UserProfile = () => {
       });
       changeEditMode(false);
     }
-    console.log(editMode);
+    // console.log(editMode);
   };
 
   return (
@@ -112,6 +112,7 @@ export const UserProfile = () => {
             display: "flex",
             flexDirection: "column",
             gap: "20px",
+            maxWidth: "500px",
           }}
         >
           <TextField
@@ -120,37 +121,52 @@ export const UserProfile = () => {
             variant="standard"
             fullWidth={true}
             value={name}
+            placeholder="provide information"
             inputProps={{
               style: {
-                fontSize: 40,
+                fontSize: 32,
+                fontWeight: "bold",
                 textAlign: "center",
                 backgroundColor: editMode ? "rgb(232, 232, 232" : "inherit",
                 readOnly: editMode ? false : true,
+                cursor: "default",
               },
             }}
           />
           <TextContainer>
-            <Typography variant="h4" align="center">
+            <Typography
+              variant="h6"
+              align="center"
+              sx={{ color: "rgba(0, 0, 0, 0.38)", fontWeight: "600" }}
+            >
               My technologies
             </Typography>
             <TextField
+              className="TextField"
               onChange={handleChangeAboutMe}
               name="technologies"
               variant="standard"
               fullWidth={true}
               value={technologies}
               multiline
+              disabled={editMode ? null : true}
+              placeholder="provide information"
               inputProps={{
                 style: {
                   textAlign: "center",
                   backgroundColor: editMode ? "rgb(232, 232, 232" : "inherit",
                   readOnly: editMode ? false : true,
+                  cursor: "default",
                 },
               }}
             />
           </TextContainer>
           <TextContainer>
-            <Typography align="center" variant="h4">
+            <Typography
+              align="center"
+              variant="h6"
+              sx={{ color: "rgba(0, 0, 0, 0.38)", fontWeight: "600" }}
+            >
               About me
             </Typography>
             <TextField
@@ -160,11 +176,14 @@ export const UserProfile = () => {
               fullWidth={true}
               value={about}
               multiline
+              disabled={editMode ? null : true}
+              placeholder="provide information"
               inputProps={{
                 style: {
                   textAlign: "center",
                   backgroundColor: editMode ? "rgb(232, 232, 232" : "inherit",
                   readOnly: editMode ? false : true,
+                  cursor: "default",
                 },
               }}
             />
