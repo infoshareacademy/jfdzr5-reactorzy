@@ -94,7 +94,6 @@ export const Navigation = () => {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => {
-                  console.log(setting);
                   if (setting === "Profile") {
                     return (
                       <MenuItem

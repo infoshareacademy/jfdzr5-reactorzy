@@ -6,8 +6,10 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "./firebase";
+import { getFirestore } from "firebase/firestore";
 
 initializeApp(firebaseConfig);
+export const db = getFirestore();
 
 ReactDOM.render(
   <React.StrictMode>
