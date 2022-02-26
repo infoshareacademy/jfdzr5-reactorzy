@@ -13,7 +13,13 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-import { getFirestore, doc, updateDoc, onSnapshot } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  updateDoc,
+  onSnapshot,
+  setDoc,
+} from "firebase/firestore";
 
 const SignupForm = ({ setErrorMessage }) => {
   const navigate = useNavigate();
@@ -52,6 +58,11 @@ const SignupForm = ({ setErrorMessage }) => {
                 user.displayName = username;
                 updateProfile(user, { displayName: username });
                 console.log(user);
+                // Kamil - add document with user details in Firebase - 21/02/2022
+                setDoc(doc(db, "userDetails", user.uid), {
+                  name: data.get("username"),
+                  userID: user.uid,
+                });
                 navigate("/");
               })
               .then(() => {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -8,6 +8,10 @@ import PageviewIcon from "@mui/icons-material/Pageview";
 import styled from "styled-components";
 import { pink } from "@mui/material/colors";
 import "./userView.css";
+import { useUserContext } from "../../services/user-context";
+import { doc, updateDoc, getFirestore, getDoc } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { db } from "../../index";
 
 const TextContainer = styled.div`
   margin-bottom: 10px;
@@ -22,16 +26,40 @@ const AvatarContainer = styled.div`
 `;
 
 export const UserProfile = () => {
+  const { user } = useUserContext();
   const [editMode, changeEditMode] = useState(false);
   const [aboutUser, setAboutUser] = useState({
-    name: "Tonald Drump",
-    technologies: "HTML, CSS, JavaScript, React, Firebase, Redux, Git, GitHub",
-    about: `Hi! I was a president of US. Some time ago I decided to change my way and become Front-End Developer.`,
+    name: "",
+    technologies: "",
+    about: "",
   });
 
   const { name, about, technologies } = aboutUser;
 
-  const handleChangeAboutMe = (event) => {
+  const getDataFromFirebase = async (usero) => {
+    const docRef = await doc(db, "userDetails", usero);
+    const docSnap = await getDoc(docRef);
+    setAboutUser({
+      name: docSnap.data().name,
+      technologies: docSnap.data().technologies,
+      about: docSnap.data().about,
+    });
+  };
+
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        getDataFromFirebase(uid);
+        // console.log("keep user? Yes! :):):)");
+      } else {
+        // console.log("keep user? NO!!!!!!!!!!!");
+      }
+    });
+  }, []);
+
+  const handleChangeAboutMe = async (event) => {
     if (editMode) {
       setAboutUser({
         ...aboutUser,
@@ -40,13 +68,19 @@ export const UserProfile = () => {
     }
   };
 
-  const handleEditMode = () => {
+  const handleEditMode = async () => {
     if (!editMode) {
       changeEditMode(true);
     } else if (editMode) {
+      const userDetails = doc(db, "userDetails", user.uid);
+      await updateDoc(userDetails, {
+        name: name,
+        technologies: technologies ? technologies : "",
+        about: about ? about : "",
+      });
       changeEditMode(false);
     }
-    console.log(editMode);
+    // console.log(editMode);
   };
 
   return (
@@ -56,7 +90,7 @@ export const UserProfile = () => {
           <Avatar
             style={{ width: "300px", height: "300px" }}
             alt="avatar"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRN5NS06Hx9iCXyqZft9AFCZHyJK-C5vloFn-m8PsE8w0so-W3yov3MG2krSS411e5m5fQ&usqp=CAU"
+            src=""
           />
 
           <div>
@@ -78,6 +112,7 @@ export const UserProfile = () => {
             display: "flex",
             flexDirection: "column",
             gap: "20px",
+            maxWidth: "500px",
           }}
         >
           <TextField
@@ -86,37 +121,52 @@ export const UserProfile = () => {
             variant="standard"
             fullWidth={true}
             value={name}
+            placeholder="provide information"
             inputProps={{
               style: {
-                fontSize: 40,
+                fontSize: 32,
+                fontWeight: "bold",
                 textAlign: "center",
                 backgroundColor: editMode ? "rgb(232, 232, 232" : "inherit",
                 readOnly: editMode ? false : true,
+                cursor: "default",
               },
             }}
           />
           <TextContainer>
-            <Typography variant="h4" align="center">
+            <Typography
+              variant="h6"
+              align="center"
+              sx={{ color: "rgba(0, 0, 0, 0.38)", fontWeight: "600" }}
+            >
               My technologies
             </Typography>
             <TextField
+              className="TextField"
               onChange={handleChangeAboutMe}
               name="technologies"
               variant="standard"
               fullWidth={true}
               value={technologies}
               multiline
+              disabled={editMode ? null : true}
+              placeholder="provide information"
               inputProps={{
                 style: {
                   textAlign: "center",
                   backgroundColor: editMode ? "rgb(232, 232, 232" : "inherit",
                   readOnly: editMode ? false : true,
+                  cursor: "default",
                 },
               }}
             />
           </TextContainer>
           <TextContainer>
-            <Typography align="center" variant="h4">
+            <Typography
+              align="center"
+              variant="h6"
+              sx={{ color: "rgba(0, 0, 0, 0.38)", fontWeight: "600" }}
+            >
               About me
             </Typography>
             <TextField
@@ -126,11 +176,14 @@ export const UserProfile = () => {
               fullWidth={true}
               value={about}
               multiline
+              disabled={editMode ? null : true}
+              placeholder="provide information"
               inputProps={{
                 style: {
                   textAlign: "center",
                   backgroundColor: editMode ? "rgb(232, 232, 232" : "inherit",
                   readOnly: editMode ? false : true,
+                  cursor: "default",
                 },
               }}
             />
