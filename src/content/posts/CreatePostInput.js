@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Avatar } from "@mui/material";
+import { CreatePostModal } from "./CreatePostModal";
 
 const InputContainer = styled.div`
   max-width: 560px;
@@ -29,12 +30,17 @@ const InputText = styled.span`
 `;
 
 export const CreatePostInput = () => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <InputContainer>
-      <Avatar sx={{ mr: "10px", cursor: "pointer" }} />
-      <InputButton>
-        <InputText>Start a post</InputText>
-      </InputButton>
-    </InputContainer>
+    <>
+      <InputContainer>
+        <Avatar sx={{ mr: "10px", cursor: "pointer" }} />
+        <InputButton onClick={() => setOpen(true)}>
+          <InputText>Start a post</InputText>
+        </InputButton>
+      </InputContainer>
+      <CreatePostModal open={open} setOpen={setOpen} />
+    </>
   );
 };
