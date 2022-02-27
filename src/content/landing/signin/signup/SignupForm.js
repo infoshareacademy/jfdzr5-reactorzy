@@ -64,6 +64,7 @@ const SignupForm = ({ setErrorMessage }) => {
                   name: data.get("username"),
                   userID: user.uid,
                 });
+                // collect of users ID
                 updateDoc(doc(db, "users", "IdList"), {
                   IdList: arrayUnion(user.uid),
                 });

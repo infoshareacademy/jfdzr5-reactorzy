@@ -26,6 +26,19 @@ const AvatarContainer = styled.div`
 `;
 
 export const UserProfile = () => {
+  const { user, usersId } = useUserContext();
+  console.log(usersId);
+  return (
+    <>
+      {" "}
+      <h1>Budujemy od nowa</h1>
+    </>
+  );
+};
+
+/* 
+
+export const UserProfile = () => {
   const { user } = useUserContext();
   const [editMode, changeEditMode] = useState(false);
   const [aboutUser, setAboutUser] = useState({
@@ -202,3 +215,4 @@ export const UserProfile = () => {
     </Paper>
   );
 };
+ */
