@@ -27,7 +27,10 @@ const AvatarContainer = styled.div`
 `;
 
 export const UserProfile = () => {
-  const { user, usersId } = useUserContext();
+  // user and detailsUser are the information of logged user
+  // usersId are the list of Id of the all user registered in app
+  // aboutUser are the current render information of the single user.
+  const { user, usersId, detailsUser, setDetailsUser } = useUserContext();
   const params = useParams();
   const [aboutUser, setAboutUser] = useState({
     name: "",
@@ -35,6 +38,7 @@ export const UserProfile = () => {
     about: "",
     userId: "",
   });
+  console.log(detailsUser);
   const [editMode, changeEditMode] = useState(false);
 
   const { name, technologies, about } = aboutUser;
@@ -93,15 +97,142 @@ export const UserProfile = () => {
   console.log(uid);
 
   return (
-    <>
-      {" "}
-      <h1>
-        Budujemy od nowa
-        {(user !== null && user.uid === params.userID) || uid === params.userID
-          ? "właściwy"
-          : "obcy"}
-      </h1>
-    </>
+    <Paper elevation={3} sx={{ p: "20px" }}>
+      <div className="profil-avatar-container">
+        <AvatarContainer>
+          <Avatar
+            style={{ width: "300px", height: "300px" }}
+            alt="avatar"
+            src=""
+          />
+          {(user !== null && user.uid === params.userID) ||
+          uid === params.userID ? (
+            <div>
+              <label
+                htmlFor="changePhoto"
+                style={{ cursor: "pointer" }}
+                title="Change Photo"
+              >
+                <Avatar sx={{ bgcolor: pink[500] }}>
+                  <PageviewIcon />
+                </Avatar>
+              </label>
+              <input style={{ display: "none" }} id="changePhoto" type="file" />
+            </div>
+          ) : null}
+        </AvatarContainer>
+        <div
+          style={{
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px",
+            maxWidth: "500px",
+          }}
+        >
+          <TextField
+            onChange={handleChangeAboutMe}
+            name="name"
+            variant="standard"
+            fullWidth={true}
+            value={
+              (user !== null && user.uid === params.userID) ||
+              uid === params.userID
+                ? detailsUser.name
+                : name
+            }
+            placeholder="provide information"
+            inputProps={{
+              style: {
+                fontSize: 32,
+                fontWeight: "bold",
+                textAlign: "center",
+                backgroundColor: editMode ? "rgb(232, 232, 232" : "inherit",
+                readOnly: editMode ? false : true,
+                cursor: "default",
+              },
+            }}
+          />
+          <TextContainer>
+            <Typography
+              variant="h6"
+              align="center"
+              sx={{ color: "rgba(0, 0, 0, 0.38)", fontWeight: "600" }}
+            >
+              My technologies
+            </Typography>
+            <TextField
+              className="TextField"
+              onChange={handleChangeAboutMe}
+              name="technologies"
+              variant="standard"
+              fullWidth={true}
+              value={
+                (user !== null && user.uid === params.userID) ||
+                uid === params.userID
+                  ? detailsUser.technologies
+                  : technologies
+              }
+              multiline
+              disabled={editMode ? null : true}
+              placeholder="provide information"
+              inputProps={{
+                style: {
+                  textAlign: "center",
+                  backgroundColor: editMode ? "rgb(232, 232, 232" : "inherit",
+                  readOnly: editMode ? false : true,
+                  cursor: "default",
+                },
+              }}
+            />
+          </TextContainer>
+          <TextContainer>
+            <Typography
+              align="center"
+              variant="h6"
+              sx={{ color: "rgba(0, 0, 0, 0.38)", fontWeight: "600" }}
+            >
+              About me
+            </Typography>
+            <TextField
+              onChange={handleChangeAboutMe}
+              name="about"
+              variant="standard"
+              fullWidth={true}
+              value={
+                (user !== null && user.uid === params.userID) ||
+                uid === params.userID
+                  ? detailsUser.about
+                  : about
+              }
+              multiline
+              disabled={editMode ? null : true}
+              placeholder="provide information"
+              inputProps={{
+                style: {
+                  textAlign: "center",
+                  backgroundColor: editMode ? "rgb(232, 232, 232" : "inherit",
+                  readOnly: editMode ? false : true,
+                  cursor: "default",
+                },
+              }}
+            />
+          </TextContainer>
+        </div>
+        {(user !== null && user.uid === params.userID) ||
+        uid === params.userID ? (
+          <div>
+            <Button
+              sx={{ margin: "20px", width: "40px" }}
+              variant={editMode ? "contained" : "outlined"}
+              onClick={handleEditMode}
+            >
+              {editMode ? "Save" : "Edit"}
+            </Button>
+          </div>
+        ) : null}
+      </div>
+    </Paper>
   );
 };
 

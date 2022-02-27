@@ -10,7 +10,30 @@ export const UserContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [usersId, setUsersId] = useState([]);
+  // Kamil
+  const [detailsUser, setDetailsUser] = useState({
+    name: "",
+    technologies: "",
+    about: "",
+    avatar: "",
+    userID: "",
+  });
   // const [avatarUrl, setAvatarUrl] = useState(null);
+
+  // Kamil
+  const getDataFromFirebase = async (usero) => {
+    const docRef = await doc(db, "userDetails", usero);
+    const docSnap = await getDoc(docRef);
+    setDetailsUser({
+      name: docSnap.data().name ? docSnap.data().name : "",
+      technologies: docSnap.data().technologies
+        ? docSnap.data().technologies
+        : "",
+      about: docSnap.data().about ? docSnap.data().about : "",
+      avatar: docSnap.data().avatar ? docSnap.data().avatar : "",
+      userID: usero,
+    });
+  };
 
   const getUserIdList = async () => {
     const docRef = await doc(db, "users", "IdList");
@@ -24,6 +47,10 @@ export const UserContextProvider = ({ children }) => {
     onAuthStateChanged(auth, (userData) => {
       setUser(userData);
       setIsLoading(false);
+      // Kamil
+      if (userData) {
+        getDataFromFirebase(userData.uid);
+      }
       getUserIdList();
       console.log(usersId);
       // if (userData) {
@@ -44,6 +71,8 @@ export const UserContextProvider = ({ children }) => {
         user,
         isLoading,
         usersId,
+        detailsUser,
+        setDetailsUser,
         // avatarUrl,
         // setAvatarUrl
       }}
