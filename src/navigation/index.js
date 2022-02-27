@@ -100,7 +100,7 @@ export const Navigation = () => {
                         key={setting}
                         onClick={handleCloseUserMenu}
                         component={Link}
-                        to="/user"
+                        to={`/user/${user.uid}`}
                       >
                         <Typography textAlign="center">{setting}</Typography>
                       </MenuItem>

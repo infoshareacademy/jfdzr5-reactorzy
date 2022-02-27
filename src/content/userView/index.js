@@ -1,4 +1,10 @@
 import { useState, useEffect } from "react";
+import { useUserContext } from "../../services/user-context";
+import { useParams } from "react-router-dom";
+import "./userView.css";
+import { doc, updateDoc, getFirestore, getDoc } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { db } from "../../index";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -7,11 +13,6 @@ import Paper from "@mui/material/Paper";
 import PageviewIcon from "@mui/icons-material/Pageview";
 import styled from "styled-components";
 import { pink } from "@mui/material/colors";
-import "./userView.css";
-import { useUserContext } from "../../services/user-context";
-import { doc, updateDoc, getFirestore, getDoc } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { db } from "../../index";
 
 const TextContainer = styled.div`
   margin-bottom: 10px;
@@ -27,27 +28,18 @@ const AvatarContainer = styled.div`
 
 export const UserProfile = () => {
   const { user, usersId } = useUserContext();
-  console.log(usersId);
-  return (
-    <>
-      {" "}
-      <h1>Budujemy od nowa</h1>
-    </>
-  );
-};
-
-/* 
-
-export const UserProfile = () => {
-  const { user } = useUserContext();
-  const [editMode, changeEditMode] = useState(false);
+  const params = useParams();
   const [aboutUser, setAboutUser] = useState({
     name: "",
     technologies: "",
     about: "",
+    userId: "",
   });
+  const [editMode, changeEditMode] = useState(false);
 
-  const { name, about, technologies } = aboutUser;
+  const { name, technologies, about } = aboutUser;
+
+  let uid;
 
   const getDataFromFirebase = async (usero) => {
     const docRef = await doc(db, "userDetails", usero);
@@ -56,8 +48,67 @@ export const UserProfile = () => {
       name: docSnap.data().name,
       technologies: docSnap.data().technologies,
       about: docSnap.data().about,
+      userId: docSnap.data().userID,
     });
   };
+
+  useEffect(() => {
+    // getDataFromFirebase(params.userID);
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        uid = user.uid;
+        getDataFromFirebase(params.userID);
+        // console.log("keep user? Yes! :):):)");
+      } else {
+        // console.log("keep user? NO!!!!!!!!!!!");
+      }
+    });
+  }, []);
+
+  const handleChangeAboutMe = async (event) => {
+    if (editMode) {
+      setAboutUser({
+        ...aboutUser,
+        [event.target.name]: event.target.value,
+      });
+    }
+  };
+
+  const handleEditMode = async () => {
+    if (!editMode) {
+      changeEditMode(true);
+    } else if (editMode) {
+      const userDetails = doc(db, "userDetails", user.uid);
+      await updateDoc(userDetails, {
+        name: name,
+        technologies: technologies ? technologies : "",
+        about: about ? about : "",
+      });
+      changeEditMode(false);
+    }
+    // console.log(editMode);
+  };
+
+  console.log(uid);
+
+  return (
+    <>
+      {" "}
+      <h1>
+        Budujemy od nowa
+        {(user !== null && user.uid === params.userID) || uid === params.userID
+          ? "właściwy"
+          : "obcy"}
+      </h1>
+    </>
+  );
+};
+
+/* 
+
+export const UserProfile = () => {
+  const [editMode, changeEditMode] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();
