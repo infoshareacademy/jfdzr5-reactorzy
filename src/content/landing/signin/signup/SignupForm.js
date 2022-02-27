@@ -19,6 +19,7 @@ import {
   updateDoc,
   onSnapshot,
   setDoc,
+  arrayUnion,
 } from "firebase/firestore";
 
 const SignupForm = ({ setErrorMessage }) => {
@@ -62,6 +63,9 @@ const SignupForm = ({ setErrorMessage }) => {
                 setDoc(doc(db, "userDetails", user.uid), {
                   name: data.get("username"),
                   userID: user.uid,
+                });
+                updateDoc(doc(db, "users", "IdList"), {
+                  IdList: arrayUnion(user.uid),
                 });
                 navigate("/");
               })
