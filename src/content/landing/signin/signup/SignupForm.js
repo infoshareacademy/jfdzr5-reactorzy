@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import { useUserContext } from "../../../../services/user-context";
+import React, { useEffect, useRef, useState } from "react";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -23,6 +24,12 @@ import {
 } from "firebase/firestore";
 
 const SignupForm = ({ setErrorMessage }) => {
+  // const [registerData, setRegisterData] = useState({
+
+  // });
+  const { user, detailsUser, setDetailsUser } = useUserContext();
+  const { name, technologies, about, avatar } = detailsUser;
+
   const navigate = useNavigate();
   const db = getFirestore();
   const totalUsers = useRef(0);
@@ -35,6 +42,13 @@ const SignupForm = ({ setErrorMessage }) => {
   });
 
   console.log(totalUsers.current);
+
+  const handleChangeAboutMe = (event) => {
+    setDetailsUser({
+      ...detailsUser,
+      [event.target.name]: event.target.value,
+    });
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -67,6 +81,11 @@ const SignupForm = ({ setErrorMessage }) => {
                 // collect of users ID
                 updateDoc(doc(db, "users", "IdList"), {
                   IdList: arrayUnion(user.uid),
+                });
+                updateDoc(doc(db, "userDetails", user.uid), {
+                  technologies: technologies,
+                  about: about,
+                  avatar: avatar,
                 });
                 navigate("/");
               })
@@ -104,6 +123,30 @@ const SignupForm = ({ setErrorMessage }) => {
             id="username"
             label="Username"
             autoFocus
+            // value={name}
+            // onChange={handleChangeAboutMe}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            name="technologies"
+            fullWidth
+            id="technologies"
+            label="My Technologies"
+            autoFocus
+            value={technologies}
+            onChange={handleChangeAboutMe}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            name="about"
+            fullWidth
+            id="about"
+            label="About me"
+            autoFocus
+            value={about}
+            onChange={handleChangeAboutMe}
           />
         </Grid>
         <Grid item xs={12}>

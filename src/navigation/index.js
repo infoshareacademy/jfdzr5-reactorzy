@@ -32,7 +32,7 @@ export const Navigation = () => {
     navigate("/");
   };
 
-  const { user } = useUserContext();
+  const { user, detailsUser, setDetailsUser } = useUserContext();
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -48,6 +48,13 @@ export const Navigation = () => {
   const handleLogOut = () => {
     signOut(auth);
     setAnchorElUser(null);
+    setDetailsUser({
+      name: "",
+      technologies: "",
+      about: "",
+      avatar: "",
+      userID: "",
+    });
   };
 
   return user ? (
