@@ -26,6 +26,7 @@ import {
   setDoc,
   arrayUnion,
 } from "firebase/firestore";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 const AvatarContainer = styled.div`
   display: flex;
@@ -44,11 +45,10 @@ const profilAvatarContainer = {
 };
 
 const SignupForm = ({ setErrorMessage }) => {
-  // const [registerData, setRegisterData] = useState({
-
-  // });
   const { user, detailsUser, setDetailsUser } = useUserContext();
   const { name, technologies, about, avatar } = detailsUser;
+
+  const [avatarFile, setAvatarFile] = useState("");
 
   const navigate = useNavigate();
   const db = getFirestore();
@@ -62,6 +62,12 @@ const SignupForm = ({ setErrorMessage }) => {
   });
 
   console.log(totalUsers.current);
+
+  const handleChangeAvatar = (event) => {
+    setAvatarFile(event.target.files[0]);
+    console.log(event.target.files[0]);
+    console.log(avatarFile);
+  };
 
   const handleChangeAboutMe = (event) => {
     setDetailsUser({
@@ -107,6 +113,7 @@ const SignupForm = ({ setErrorMessage }) => {
                   about: about,
                   avatar: avatar,
                 });
+
                 navigate("/");
               })
               .then(() => {
@@ -150,7 +157,13 @@ const SignupForm = ({ setErrorMessage }) => {
               <PageviewIcon />
             </Avatar>
           </label>
-          <input style={{ display: "none" }} id="changePhoto" type="file" />
+          <input
+            style={{ display: "none" }}
+            id="changePhoto"
+            type="file"
+            accept=".png, .jpg, .jpeg"
+            onChange={handleChangeAvatar}
+          />
         </div>
       </AvatarContainer>
       <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
