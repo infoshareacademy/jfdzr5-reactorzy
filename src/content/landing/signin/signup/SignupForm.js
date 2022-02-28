@@ -129,6 +129,7 @@ const SignupForm = ({ setErrorMessage }) => {
         </Grid>
         <Grid item xs={12}>
           <TextField
+            multiline
             name="technologies"
             fullWidth
             id="technologies"
@@ -140,6 +141,7 @@ const SignupForm = ({ setErrorMessage }) => {
         </Grid>
         <Grid item xs={12}>
           <TextField
+            multiline
             name="about"
             fullWidth
             id="about"

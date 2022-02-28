@@ -32,28 +32,31 @@ export const UserProfile = () => {
   // aboutUser are the current render information of the single user.
   const { user, usersId, detailsUser, setDetailsUser } = useUserContext();
   const params = useParams();
-  const [aboutUser, setAboutUser] = useState({
-    name: "",
-    technologies: "",
-    about: "",
-    userId: "",
-  });
+  // const [aboutUser, setAboutUser] = useState(
+  //   {
+  //     name: "",
+  //     technologies: "",
+  //     about: "",
+  //     userId: "",
+  //   }
+  //   // detailsUser
+  // );
   console.log(detailsUser);
   const [editMode, changeEditMode] = useState(false);
 
-  const { name, technologies, about } = aboutUser;
+  const { name, technologies, about } = detailsUser;
 
   let uid;
 
   const getDataFromFirebase = async (usero) => {
     const docRef = await doc(db, "userDetails", usero);
     const docSnap = await getDoc(docRef);
-    setAboutUser({
-      name: docSnap.data().name,
-      technologies: docSnap.data().technologies,
-      about: docSnap.data().about,
-      userId: docSnap.data().userID,
-    });
+    // setAboutUser({
+    //   name: docSnap.data().name,
+    //   technologies: docSnap.data().technologies,
+    //   about: docSnap.data().about,
+    //   userId: docSnap.data().userID,
+    // });
   };
 
   useEffect(() => {
@@ -72,8 +75,14 @@ export const UserProfile = () => {
 
   const handleChangeAboutMe = async (event) => {
     if (editMode) {
-      setAboutUser({
-        ...aboutUser,
+      setDetailsUser({
+        ...detailsUser,
+        [event.target.name]: event.target.value,
+      });
+      // setDetailsUser(aboutUser);
+      const userDetails = doc(db, "userDetails", user.uid);
+      await updateDoc(userDetails, {
+        ...detailsUser,
         [event.target.name]: event.target.value,
       });
     }
@@ -83,12 +92,6 @@ export const UserProfile = () => {
     if (!editMode) {
       changeEditMode(true);
     } else if (editMode) {
-      const userDetails = doc(db, "userDetails", user.uid);
-      await updateDoc(userDetails, {
-        name: name,
-        technologies: technologies ? technologies : "",
-        about: about ? about : "",
-      });
       changeEditMode(false);
     }
     // console.log(editMode);
