@@ -7,7 +7,11 @@ import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import PageviewIcon from "@mui/icons-material/Pageview";
+import { pink } from "@mui/material/colors";
 import { NavLink, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import validator from "validator";
 import {
   getAuth,
@@ -22,6 +26,22 @@ import {
   setDoc,
   arrayUnion,
 } from "firebase/firestore";
+
+const AvatarContainer = styled.div`
+  display: flex;
+  alig-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 15px;
+`;
+
+const profilAvatarContainer = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexDirection: "column",
+  gap: "20px",
+};
 
 const SignupForm = ({ setErrorMessage }) => {
   // const [registerData, setRegisterData] = useState({
@@ -113,83 +133,107 @@ const SignupForm = ({ setErrorMessage }) => {
     );
   };
   return (
-    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <TextField
-            name="username"
-            required
-            fullWidth
-            id="username"
-            label="Username"
-            autoFocus
-            // value={name}
-            // onChange={handleChangeAboutMe}
-          />
+    <div style={profilAvatarContainer}>
+      <AvatarContainer>
+        <Avatar
+          style={{ width: "300px", height: "300px" }}
+          alt="avatar"
+          src=""
+        />
+        <div>
+          <label
+            htmlFor="changePhoto"
+            style={{ cursor: "pointer" }}
+            title="Add Photo"
+          >
+            <Avatar sx={{ bgcolor: pink[500] }}>
+              <PageviewIcon />
+            </Avatar>
+          </label>
+          <input style={{ display: "none" }} id="changePhoto" type="file" />
+        </div>
+      </AvatarContainer>
+      <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              name="username"
+              required
+              fullWidth
+              id="username"
+              label="Username"
+              autoFocus
+              // value={name}
+              // onChange={handleChangeAboutMe}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              multiline
+              name="technologies"
+              fullWidth
+              id="technologies"
+              label="My Technologies"
+              value={technologies}
+              onChange={handleChangeAboutMe}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              multiline
+              name="about"
+              fullWidth
+              id="about"
+              label="About me"
+              value={about}
+              onChange={handleChangeAboutMe}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="new-password"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={<Checkbox value="allowExtraEmails" color="primary" />}
+              label="I want to receive follower updates via email."
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            multiline
-            name="technologies"
-            fullWidth
-            id="technologies"
-            label="My Technologies"
-            autoFocus
-            value={technologies}
-            onChange={handleChangeAboutMe}
-          />
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Sign Up
+        </Button>
+        <Grid container justifyContent="flex-end">
+          <Grid item>
+            <Link variant="body2" component={NavLink} to="/">
+              Already have an account? Sign in
+            </Link>
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            multiline
-            name="about"
-            fullWidth
-            id="about"
-            label="About me"
-            autoFocus
-            value={about}
-            onChange={handleChangeAboutMe}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="new-password"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <FormControlLabel
-            control={<Checkbox value="allowExtraEmails" color="primary" />}
-            label="I want to receive follower updates via email."
-          />
-        </Grid>
-      </Grid>
-      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-        Sign Up
-      </Button>
-      <Grid container justifyContent="flex-end">
-        <Grid item>
-          <Link variant="body2" component={NavLink} to="/">
-            Already have an account? Sign in
-          </Link>
-        </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </div>
   );
 };
 
