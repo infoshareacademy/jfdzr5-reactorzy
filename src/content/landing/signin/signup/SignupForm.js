@@ -112,14 +112,28 @@ const SignupForm = ({ setErrorMessage }) => {
                 updateDoc(doc(db, "userDetails", user.uid), {
                   technologies: technologies,
                   about: about,
-                  avatar: avatar,
                 });
                 const storageRef = ref(storage, `avatars/${user.uid}`);
-                uploadBytes(storageRef, avatarFile).then((snapshot) => {
-                  console.log("Uploaded a blob or file!", avatarFile);
-                  setAvatarFile(null);
-                });
-                navigate("/");
+                uploadBytes(storageRef, avatarFile)
+                  .then((snapshot) => {
+                    console.log("Uploaded a blob or file!", avatarFile);
+                    setAvatarFile(null);
+                  })
+                  .then(() => {
+                    getDownloadURL(ref(storage, `avatars/${user.uid}`)).then(
+                      (url) => {
+                        console.log("dodano:", url);
+                        setDetailsUser({
+                          ...detailsUser,
+                          avatar: url,
+                        });
+                        updateDoc(doc(db, "userDetails", user.uid), {
+                          avatar: url,
+                        });
+                      }
+                    );
+                    navigate("/");
+                  });
               })
               .then(() => {
                 updateDoc(totalUsersRef, {

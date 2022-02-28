@@ -44,7 +44,7 @@ export const UserProfile = () => {
   console.log(detailsUser);
   const [editMode, changeEditMode] = useState(false);
 
-  const { name, technologies, about } = detailsUser;
+  const { name, technologies, about, avatar } = detailsUser;
 
   let uid;
 
@@ -106,7 +106,7 @@ export const UserProfile = () => {
           <Avatar
             style={{ width: "300px", height: "300px" }}
             alt="avatar"
-            src=""
+            src={avatar || ""}
           />
           {(user !== null && user.uid === params.userID) ||
           uid === params.userID ? (
