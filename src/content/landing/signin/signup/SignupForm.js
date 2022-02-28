@@ -27,6 +27,7 @@ import {
   arrayUnion,
 } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { storage } from "../../../../index";
 
 const AvatarContainer = styled.div`
   display: flex;
@@ -113,7 +114,11 @@ const SignupForm = ({ setErrorMessage }) => {
                   about: about,
                   avatar: avatar,
                 });
-
+                const storageRef = ref(storage, `avatars/${user.uid}`);
+                uploadBytes(storageRef, avatarFile).then((snapshot) => {
+                  console.log("Uploaded a blob or file!", avatarFile);
+                  setAvatarFile(null);
+                });
                 navigate("/");
               })
               .then(() => {
