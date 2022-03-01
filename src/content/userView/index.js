@@ -32,15 +32,15 @@ export const UserProfile = () => {
   // aboutUser are the current render information of the single user.
   const { user, usersId, detailsUser, setDetailsUser } = useUserContext();
   const params = useParams();
-  // const [aboutUser, setAboutUser] = useState(
-  //   {
-  //     name: "",
-  //     technologies: "",
-  //     about: "",
-  //     userId: "",
-  //   }
-  //   // detailsUser
-  // );
+  const [aboutUser, setAboutUser] = useState(
+    {
+      name: "",
+      technologies: "",
+      about: "",
+      userId: "",
+    }
+    //   // detailsUser
+  );
   console.log(detailsUser);
   const [editMode, changeEditMode] = useState(false);
 
@@ -51,12 +51,16 @@ export const UserProfile = () => {
   const getDataFromFirebase = async (usero) => {
     const docRef = await doc(db, "userDetails", usero);
     const docSnap = await getDoc(docRef);
-    // setAboutUser({
-    //   name: docSnap.data().name,
-    //   technologies: docSnap.data().technologies,
-    //   about: docSnap.data().about,
-    //   userId: docSnap.data().userID,
-    // });
+    setAboutUser({
+      name: docSnap.data().name ? docSnap.data().name : "",
+      technologies: docSnap.data().technologies
+        ? docSnap.data().technologies
+        : "",
+      about: docSnap.data().about ? docSnap.data().about : "",
+      avatar: docSnap.data().avatar ? docSnap.data().avatar : "",
+      userID: usero,
+    });
+    console.log(aboutUser);
   };
 
   useEffect(() => {
@@ -66,6 +70,7 @@ export const UserProfile = () => {
       if (user) {
         uid = user.uid;
         getDataFromFirebase(params.userID);
+        console.log(params.userID);
         // console.log("keep user? Yes! :):):)");
       } else {
         // console.log("keep user? NO!!!!!!!!!!!");
@@ -106,7 +111,12 @@ export const UserProfile = () => {
           <Avatar
             style={{ width: "300px", height: "300px" }}
             alt="avatar"
-            src={avatar || ""}
+            src={
+              (user !== null && user.uid === params.userID) ||
+              uid === params.userID
+                ? detailsUser.avatar
+                : aboutUser.avatar
+            }
           />
           {(user !== null && user.uid === params.userID) ||
           uid === params.userID ? (
@@ -142,7 +152,7 @@ export const UserProfile = () => {
               (user !== null && user.uid === params.userID) ||
               uid === params.userID
                 ? detailsUser.name
-                : name
+                : aboutUser.name
             }
             placeholder="provide information"
             inputProps={{
@@ -174,7 +184,7 @@ export const UserProfile = () => {
                 (user !== null && user.uid === params.userID) ||
                 uid === params.userID
                   ? detailsUser.technologies
-                  : technologies
+                  : aboutUser.technologies
               }
               multiline
               disabled={editMode ? null : true}
@@ -206,7 +216,7 @@ export const UserProfile = () => {
                 (user !== null && user.uid === params.userID) ||
                 uid === params.userID
                   ? detailsUser.about
-                  : about
+                  : aboutUser.about
               }
               multiline
               disabled={editMode ? null : true}
