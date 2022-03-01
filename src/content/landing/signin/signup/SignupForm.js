@@ -65,14 +65,40 @@ const SignupForm = ({ setErrorMessage }) => {
 
   console.log(totalUsers.current);
 
+  /* 
   const handleChangeAvatar = (event) => {
     setAvatarFile(event.target.files[0]);
     console.log(event.target.files[0]);
-    setCurrentAvatar(event.target.value);
+    setCurrentAvatar(event.target.files[0].webkitRelativePath);
+    console.log(currentAvatar);
     // console.log(avatarFile);
+  };
+*/
+
+  const handleChangeAvatar = async (event) => {
+    setAvatarFile(event.target.files[0]);
+    const currentAvatartStoragePath = Math.floor(Math.random() * 1000000);
+    console.log(currentAvatartStoragePath);
+
+    const storageRef = ref(
+      storage,
+      `momentaryAvatars/${currentAvatartStoragePath}`
+    );
+    uploadBytes(storageRef, event.target.files[0])
+      .then((snapshot) => {
+        console.log("Uploaded a blob or file!", event.target.files[0]);
+      })
+      .then(() => {
+        getDownloadURL(
+          ref(storage, `momentaryAvatars/${currentAvatartStoragePath}`)
+        ).then((url) => {
+          setCurrentAvatar(url);
+        });
+      });
   };
 
   const handleChangeAboutMe = (event) => {
+    console.log(detailsUser);
     setDetailsUser({
       ...detailsUser,
       [event.target.name]: event.target.value,
@@ -105,15 +131,18 @@ const SignupForm = ({ setErrorMessage }) => {
                 setDoc(doc(db, "userDetails", user.uid), {
                   name: data.get("username"),
                   userID: user.uid,
+                  technologies: technologies,
+                  about: about,
                 });
+                console.log(detailsUser);
                 // collect of users ID
                 updateDoc(doc(db, "users", "IdList"), {
                   IdList: arrayUnion(user.uid),
                 });
-                updateDoc(doc(db, "userDetails", user.uid), {
-                  technologies: technologies,
-                  about: about,
-                });
+                // updateDoc(doc(db, "userDetails", user.uid), {
+                //   technologies: technologies,
+                //   about: about,
+                // });
                 const storageRef = ref(storage, `avatars/${user.uid}`);
                 uploadBytes(storageRef, avatarFile)
                   .then((snapshot) => {
@@ -125,7 +154,11 @@ const SignupForm = ({ setErrorMessage }) => {
                       (url) => {
                         console.log("dodano:", url);
                         setDetailsUser({
-                          ...detailsUser,
+                          // ...detailsUser,
+                          name: data.get("username"),
+                          userID: user.uid,
+                          technologies: technologies,
+                          about: about,
                           avatar: url,
                         });
                         updateDoc(doc(db, "userDetails", user.uid), {
