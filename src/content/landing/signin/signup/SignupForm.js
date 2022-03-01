@@ -50,6 +50,7 @@ const SignupForm = ({ setErrorMessage }) => {
   const { name, technologies, about, avatar } = detailsUser;
 
   const [avatarFile, setAvatarFile] = useState("");
+  const [currentAvatar, setCurrentAvatar] = useState("");
 
   const navigate = useNavigate();
   const db = getFirestore();
@@ -67,7 +68,8 @@ const SignupForm = ({ setErrorMessage }) => {
   const handleChangeAvatar = (event) => {
     setAvatarFile(event.target.files[0]);
     console.log(event.target.files[0]);
-    console.log(avatarFile);
+    setCurrentAvatar(event.target.value);
+    // console.log(avatarFile);
   };
 
   const handleChangeAboutMe = (event) => {
@@ -76,7 +78,6 @@ const SignupForm = ({ setErrorMessage }) => {
       [event.target.name]: event.target.value,
     });
   };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     const db = getFirestore();
@@ -164,7 +165,7 @@ const SignupForm = ({ setErrorMessage }) => {
         <Avatar
           style={{ width: "300px", height: "300px" }}
           alt="avatar"
-          src=""
+          src={currentAvatar || ""}
         />
         <div>
           <label
@@ -195,8 +196,6 @@ const SignupForm = ({ setErrorMessage }) => {
               id="username"
               label="Username"
               autoFocus
-              // value={name}
-              // onChange={handleChangeAboutMe}
             />
           </Grid>
           <Grid item xs={12}>
