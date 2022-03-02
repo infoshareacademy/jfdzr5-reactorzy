@@ -78,13 +78,14 @@ const ImagePost = ({
   handleSubmit,
   imageData,
   setImageData,
+  setImage,
 }) => {
   const handleImageUpload = (e) => {
     if (e.target.files[0]) {
+      setImage(e.target.files[0]);
       const reader = new FileReader();
       reader.onloadend = (img) => {
         setImageData(img.target.result);
-        console.log(imageData);
       };
       reader.readAsDataURL(e.target.files[0]);
     }
@@ -111,7 +112,7 @@ const ImagePost = ({
             margin: "15px 0 0",
           }}
         />
-        <form style={{ width: "100%", height: "100%" }}>
+        <form style={{ width: "100%", height: "100%" }} onSubmit={handleSubmit}>
           <TitleInput placeholder="Post title" required name="title" />
           <ContentInput placeholder="Post content" required name="content" />
           <ImageContainer>
@@ -125,7 +126,7 @@ const ImagePost = ({
                 }}
               />
             ) : (
-              <p>failed</p>
+              <p>Failed to load</p>
             )}
           </ImageContainer>
           <div
@@ -161,7 +162,6 @@ const ImagePost = ({
                 size="large"
                 color="success"
                 sx={{ ml: "10px", width: "150px" }}
-                onClick={handleSubmit}
               >
                 Submit
               </Button>

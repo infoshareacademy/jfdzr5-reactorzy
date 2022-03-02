@@ -44,8 +44,7 @@ const style = {
   height: "50%",
   minWidth: "400px",
   minHeight: "350px",
-
-  width: "40%",
+  width: "30%",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
@@ -61,15 +60,22 @@ const style = {
   padding: "15px 25px 25px",
 };
 
-const TextPost = ({ open, setOpen, handleSubmit, setImageData, imageData }) => {
+const TextPost = ({
+  open,
+  setOpen,
+  handleSubmit,
+  setImageData,
+  imageData,
+  setImage,
+}) => {
   const handleImageUpload = (e) => {
     if (e.target.files[0]) {
+      setImage(e.target.files[0]);
       const reader = new FileReader();
       reader.onloadend = (img) => {
         setImageData(img.target.result);
       };
       reader.readAsDataURL(e.target.files[0]);
-      console.log(imageData);
     }
   };
   return (
@@ -94,7 +100,7 @@ const TextPost = ({ open, setOpen, handleSubmit, setImageData, imageData }) => {
             margin: "15px 0 0",
           }}
         />
-        <form style={{ width: "100%", height: "100%" }}>
+        <form style={{ width: "100%", height: "100%" }} onSubmit={handleSubmit}>
           <TitleInput placeholder="Post title" required name="title" />
           <ContentInput placeholder="Post content" required name="content" />
           <div style={{ display: "flex", justifyContent: "center" }}>
@@ -123,7 +129,6 @@ const TextPost = ({ open, setOpen, handleSubmit, setImageData, imageData }) => {
                 size="large"
                 color="success"
                 sx={{ ml: "10px", width: "150px" }}
-                onClick={handleSubmit}
               >
                 Submit
               </Button>

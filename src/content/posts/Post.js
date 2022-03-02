@@ -42,8 +42,6 @@ export default function RecipeReviewCard() {
     });
   }, []);
 
-  console.log(imageColor);
-
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };

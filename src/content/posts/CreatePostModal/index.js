@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { collection, addDoc, getFirestore } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getFirestore,
+  updateDoc,
+} from "firebase/firestore";
 import { useUserContext } from "../../../services/user-context";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import TextPost from "./TextPost";
@@ -10,25 +15,13 @@ export const CreatePostModal = ({ open, setOpen }) => {
   const db = getFirestore();
   const storage = getStorage();
   const [imageData, setImageData] = useState(null);
-
-  const handleImageUpload = (e) => {
-    if (e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onloadend = (img) => {
-        setImageData(img.target.result);
-        setTimeout(() => console.log(imageData), 10000);
-      };
-      reader.readAsDataURL(e.target.files[0]);
-    }
-  };
-
-  const pictureUploadRef = ref(storage, "posts/");
+  const [image, setImage] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const date = new Date();
     const formData = new FormData(e.target);
-    console.log(formData);
     const title = formData.get("title");
     const content = formData.get("content");
 
@@ -36,13 +29,20 @@ export const CreatePostModal = ({ open, setOpen }) => {
       comments: [],
       content: content,
       likes: [],
-      picture: imageData,
       technologies: [],
-      timestamp: new Date(),
+      timestamp: date,
       title: title,
       userAvatar: "avatarUrl",
-      userID: user.id,
+      userID: user.uid,
     });
+
+    if (image) {
+      const pictureUploadRef = ref(storage, `posts/${postRef.id}`);
+      uploadBytes(pictureUploadRef, image);
+      updateDoc(postRef, {
+        picture: pictureUploadRef.fullPath,
+      });
+    }
   };
   return imageData ? (
     <div>
@@ -51,15 +51,16 @@ export const CreatePostModal = ({ open, setOpen }) => {
         setOpen={setOpen}
         setImageData={setImageData}
         handleSubmit={handleSubmit}
+        setImage={setImage}
         imageData={imageData}
       />
     </div>
   ) : (
     <div>
-      <div style={{ width: "100px", height: "100px" }}></div>
       <TextPost
         open={open}
         setOpen={setOpen}
+        setImage={setImage}
         handleSubmit={handleSubmit}
         imageData={imageData}
         setImageData={setImageData}
