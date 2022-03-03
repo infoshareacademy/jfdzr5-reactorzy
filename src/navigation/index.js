@@ -32,7 +32,8 @@ export const Navigation = () => {
     navigate("/");
   };
 
-  const { user } = useUserContext();
+  const { user, detailsUser, setDetailsUser } = useUserContext();
+  const { name, avatar, momentaryAvatar } = detailsUser;
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -48,6 +49,13 @@ export const Navigation = () => {
   const handleLogOut = () => {
     signOut(auth);
     setAnchorElUser(null);
+    setDetailsUser({
+      name: "",
+      technologies: "",
+      about: "",
+      avatar: "",
+      userID: "",
+    });
   };
 
   return user ? (
@@ -74,7 +82,7 @@ export const Navigation = () => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt={name} src={momentaryAvatar || avatar || ""} />
                 </IconButton>
               </Tooltip>
               <Menu

@@ -4,6 +4,9 @@ import { useParams } from "react-router-dom";
 import "./userView.css";
 import { doc, updateDoc, getFirestore, getDoc } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+// import { storage } from "../../../../index";
+import { storage } from "../../index";
 import { db } from "../../index";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
@@ -32,16 +35,23 @@ export const UserProfile = () => {
   // aboutUser are the current render information of the single user.
   const { user, usersId, detailsUser, setDetailsUser } = useUserContext();
   const params = useParams();
-  const [aboutUser, setAboutUser] = useState({
-    name: "",
-    technologies: "",
-    about: "",
-    userId: "",
-  });
+  const [aboutUser, setAboutUser] = useState(
+    {
+      name: "",
+      technologies: "",
+      about: "",
+      userId: "",
+    }
+    //   // detailsUser
+  );
   console.log(detailsUser);
   const [editMode, changeEditMode] = useState(false);
+  const [avatarChanged, setAvatartChanged] = useState(null);
+  const [newAvatar, setNewAvatar] = useState(null);
+  const [avatarFile, setAvatarFile] = useState("");
+  const [currentAvatar, setCurrentAvatar] = useState("");
 
-  const { name, technologies, about } = aboutUser;
+  const { name, technologies, about, avatar, momentaryAvatar } = detailsUser;
 
   let uid;
 
@@ -49,11 +59,15 @@ export const UserProfile = () => {
     const docRef = await doc(db, "userDetails", usero);
     const docSnap = await getDoc(docRef);
     setAboutUser({
-      name: docSnap.data().name,
-      technologies: docSnap.data().technologies,
-      about: docSnap.data().about,
-      userId: docSnap.data().userID,
+      name: docSnap.data().name ? docSnap.data().name : "",
+      technologies: docSnap.data().technologies
+        ? docSnap.data().technologies
+        : "",
+      about: docSnap.data().about ? docSnap.data().about : "",
+      avatar: docSnap.data().avatar ? docSnap.data().avatar : "",
+      userID: usero,
     });
+    console.log(aboutUser);
   };
 
   useEffect(() => {
@@ -63,6 +77,7 @@ export const UserProfile = () => {
       if (user) {
         uid = user.uid;
         getDataFromFirebase(params.userID);
+        console.log(params.userID);
         // console.log("keep user? Yes! :):):)");
       } else {
         // console.log("keep user? NO!!!!!!!!!!!");
@@ -72,8 +87,13 @@ export const UserProfile = () => {
 
   const handleChangeAboutMe = async (event) => {
     if (editMode) {
-      setAboutUser({
-        ...aboutUser,
+      setDetailsUser({
+        ...detailsUser,
+        [event.target.name]: event.target.value,
+      });
+      const userDetails = doc(db, "userDetails", user.uid);
+      await updateDoc(userDetails, {
+        ...detailsUser,
         [event.target.name]: event.target.value,
       });
     }
@@ -83,27 +103,65 @@ export const UserProfile = () => {
     if (!editMode) {
       changeEditMode(true);
     } else if (editMode) {
-      const userDetails = doc(db, "userDetails", user.uid);
-      await updateDoc(userDetails, {
-        name: name,
-        technologies: technologies ? technologies : "",
-        about: about ? about : "",
-      });
       changeEditMode(false);
     }
-    // console.log(editMode);
   };
 
-  console.log(uid);
 
-  return (
+  const handleChangeAvatar = async (event) => {
+    setAvatarFile(event.target.files[0]);
+    const currentAvatartStoragePath = Math.floor(Math.random() * 1000000);
+    console.log(currentAvatartStoragePath);
+
+    const storageRef = ref(
+      storage,
+      `momentaryAvatars/${currentAvatartStoragePath}`
+    );
+    uploadBytes(storageRef, event.target.files[0])
+      .then((snapshot) => {
+        console.log("Uploaded a blob or file!", event.target.files[0]);
+      })
+      .then(() => {
+        getDownloadURL(
+          ref(storage, `momentaryAvatars/${currentAvatartStoragePath}`)
+        ).then((url) => {
+          setDetailsUser({
+            ...detailsUser,
+            avatar: url
+          });
+          console.log(detailsUser)
+        });
+      });
+      changeAvatarInFirebase(event.target.files[0]);
+      
+  };
+
+  const changeAvatarInFirebase = async (neew) => {
+    const storageRef = ref(storage, `avatars/${user.uid}`);
+    uploadBytes(storageRef, neew)
+      .then((snapshot) => {
+        console.log("Uploaded a blob or file!", neew);
+        console.log(newAvatar)
+        setNewAvatar(neew);
+      })
+  }
+
+  console.log(uid);
+  console.log(detailsUser);
+
+  return user ? (
     <Paper elevation={3} sx={{ p: "20px" }}>
       <div className="profil-avatar-container">
         <AvatarContainer>
           <Avatar
             style={{ width: "300px", height: "300px" }}
             alt="avatar"
-            src=""
+            src={momentaryAvatar ||
+              ((user !== null && user.uid === params.userID) ||
+              uid === params.userID
+                ? detailsUser.avatar
+                : aboutUser.avatar)
+            }
           />
           {(user !== null && user.uid === params.userID) ||
           uid === params.userID ? (
@@ -117,7 +175,7 @@ export const UserProfile = () => {
                   <PageviewIcon />
                 </Avatar>
               </label>
-              <input style={{ display: "none" }} id="changePhoto" type="file" />
+              <input style={{ display: "none" }} id="changePhoto" type="file" onChange={handleChangeAvatar}/>
             </div>
           ) : null}
         </AvatarContainer>
@@ -139,7 +197,7 @@ export const UserProfile = () => {
               (user !== null && user.uid === params.userID) ||
               uid === params.userID
                 ? detailsUser.name
-                : name
+                : aboutUser.name
             }
             placeholder="provide information"
             inputProps={{
@@ -171,7 +229,7 @@ export const UserProfile = () => {
                 (user !== null && user.uid === params.userID) ||
                 uid === params.userID
                   ? detailsUser.technologies
-                  : technologies
+                  : aboutUser.technologies
               }
               multiline
               disabled={editMode ? null : true}
@@ -203,7 +261,7 @@ export const UserProfile = () => {
                 (user !== null && user.uid === params.userID) ||
                 uid === params.userID
                   ? detailsUser.about
-                  : about
+                  : aboutUser.about
               }
               multiline
               disabled={editMode ? null : true}
@@ -233,6 +291,8 @@ export const UserProfile = () => {
         ) : null}
       </div>
     </Paper>
+  ) : (
+    <></>
   );
 };
 

@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import Paper from '@mui/material/Paper';
 
 const ContainerDashboardInfo = styled.div`
   display: flex;
@@ -59,6 +60,7 @@ const BoldInformation = styled.span`
 
 const DashboardData = ({ totalUsersRegistered }) => {
   return (
+    <Paper elevation={14} sx={{ bgcolor: '#f0f2f5', height: '100%'}}>
     <ContainerDashboardInfo>
       <DashboardInfo>
         <ContainerName>
@@ -88,6 +90,7 @@ const DashboardData = ({ totalUsersRegistered }) => {
         </InformationDashboard>
       </DashboardInfo>
     </ContainerDashboardInfo>
+    </Paper>
   );
 };
 

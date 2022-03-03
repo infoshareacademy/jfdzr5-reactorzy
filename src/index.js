@@ -7,9 +7,11 @@ import { BrowserRouter } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "./firebase";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 initializeApp(firebaseConfig);
 export const db = getFirestore();
+export const storage = getStorage(initializeApp(firebaseConfig));
 
 ReactDOM.render(
   <React.StrictMode>
