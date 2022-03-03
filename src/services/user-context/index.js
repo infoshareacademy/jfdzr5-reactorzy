@@ -15,7 +15,6 @@ export const UserContextProvider = ({ children }) => {
     onAuthStateChanged(auth, (userData) => {
       setUser(userData);
       setIsLoading(false);
-
       // if (userData) {
       //     const storage = getStorage();
       //     // const storageRef = ref(storage, `avatars/${userData.uid}`);

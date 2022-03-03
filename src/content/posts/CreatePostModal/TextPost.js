@@ -42,7 +42,7 @@ const ContentInput = styled.textarea`
 const style = {
   position: "absolute",
   height: "50%",
-  minWidth: "400px",
+  minWidth: "300px",
   minHeight: "350px",
   width: "30%",
   top: "50%",

@@ -16,7 +16,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CommentIcon from "@mui/icons-material/Comment";
 import { prominent } from "color.js";
-import { getBlob, getStorage, ref } from "firebase/storage";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -43,23 +44,36 @@ export default function Post({
   const [expanded, setExpanded] = useState(false);
   const [imageColor, setImageColor] = useState(0);
   const [imgSrc, setImgSrc] = useState(null);
+  const [userName, setUserName] = useState(userID);
 
   useEffect(() => {
-    prominent("https://dummyimage.com/300/09f/fff.png", {
-      amount: 1,
-      format: "hex",
-    }).then((c) => {
-      setImageColor(c);
-    });
+    console.log(timestamp.toDate().toDateString());
     if (picture) {
       const storage = getStorage();
       const imgRef = ref(storage, picture);
-      console.log(imgRef);
-      console.log(getBlob(imgRef));
-      // setImgSrc(getBlob(imgRef));
-      // getBlob(imgRef).then((e) => console.log(e));
+      getDownloadURL(ref(storage, imgRef)).then((url) => {
+        setImgSrc(url);
+        prominent(url, {
+          amount: 1,
+          format: "hex",
+        }).then((c) => {
+          setImageColor(c);
+        });
+      });
     }
-  }, [picture]);
+    const fetchUserData = async () => {
+      const db = getFirestore();
+      const docRef = doc(db, "userDetails", userID);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setUserName(docSnap.data().name);
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    };
+    fetchUserData();
+  }, [picture, imgSrc, userID]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -67,7 +81,6 @@ export default function Post({
   return (
     <>
       <Card
-        key={postID}
         sx={{
           maxWidth: 590,
           minWidth: 320,
@@ -90,8 +103,18 @@ export default function Post({
             </IconButton>
           }
           // Pull title and date posted
-          title={userID}
-          // subheader={timestamp.toDateString()}
+          title={userName}
+          subheader={
+            timestamp.toDate().toDateString() +
+            " " +
+            (timestamp.toDate().getHours() < 10
+              ? "0" + timestamp.toDate().getHours()
+              : timestamp.toDate().getHours()) +
+            ":" +
+            (timestamp.toDate().getMinutes() < 10
+              ? "0" + timestamp.toDate().getMinutes()
+              : timestamp.toDate().getMinutes())
+          }
         />
         {/* Add check if post is with picture */}
         <div
