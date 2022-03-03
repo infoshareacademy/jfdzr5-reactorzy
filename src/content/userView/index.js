@@ -51,7 +51,7 @@ export const UserProfile = () => {
   const [avatarFile, setAvatarFile] = useState("");
   const [currentAvatar, setCurrentAvatar] = useState("");
 
-  const { name, technologies, about, avatar } = detailsUser;
+  const { name, technologies, about, avatar, momentaryAvatar } = detailsUser;
 
   let uid;
 
@@ -127,7 +127,12 @@ export const UserProfile = () => {
         getDownloadURL(
           ref(storage, `momentaryAvatars/${currentAvatartStoragePath}`)
         ).then((url) => {
-          setCurrentAvatar(url);
+          setDetailsUser({
+            ...detailsUser,
+            momentaryAvatar: url
+          });
+          console.log(detailsUser)
+          // setCurrentAvatar(url);
         });
       });
       changeAvatarInFirebase(event.target.files[0]);
@@ -159,6 +164,7 @@ export const UserProfile = () => {
   }
 
   console.log(uid);
+  console.log(detailsUser);
 
   return (
     <Paper elevation={3} sx={{ p: "20px" }}>
@@ -167,7 +173,7 @@ export const UserProfile = () => {
           <Avatar
             style={{ width: "300px", height: "300px" }}
             alt="avatar"
-            src={currentAvatar ||
+            src={momentaryAvatar ||
               ((user !== null && user.uid === params.userID) ||
               uid === params.userID
                 ? detailsUser.avatar

@@ -17,6 +17,7 @@ export const UserContextProvider = ({ children }) => {
     about: "",
     avatar: "",
     userID: "",
+    momentaryAvatar: ''
   });
   // const [avatarUrl, setAvatarUrl] = useState(null);
 
@@ -32,6 +33,7 @@ export const UserContextProvider = ({ children }) => {
       about: docSnap.data().about ? docSnap.data().about : "",
       avatar: docSnap.data().avatar ? docSnap.data().avatar : "",
       userID: usero,
+      momentaryAvatar: ''
     });
   };
 

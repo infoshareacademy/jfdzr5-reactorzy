@@ -33,7 +33,7 @@ export const Navigation = () => {
   };
 
   const { user, detailsUser, setDetailsUser } = useUserContext();
-  const { name, avatar } = detailsUser;
+  const { name, avatar, momentaryAvatar } = detailsUser;
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -82,7 +82,7 @@ export const Navigation = () => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt={name} src={avatar || ""} />
+                  <Avatar alt={name} src={momentaryAvatar || avatar || ""} />
                 </IconButton>
               </Tooltip>
               <Menu
