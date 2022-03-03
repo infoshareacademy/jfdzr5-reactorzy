@@ -43,6 +43,7 @@ export const UserProfile = () => {
   );
   console.log(detailsUser);
   const [editMode, changeEditMode] = useState(false);
+  const [avatarChanged, setAvatartChanged] = useState(null)
 
   const { name, technologies, about, avatar } = detailsUser;
 
@@ -102,6 +103,18 @@ export const UserProfile = () => {
     // console.log(editMode);
   };
 
+  const handleChangeAvatar = (event) => {
+      const input = event.target;
+      const reader = new FileReader();
+      reader.onload = function(){
+        setAvatartChanged(reader.result);
+        // const output = document.getElementById('output');
+        // output.src = dataURL;
+        console.log('avatar change to => ', avatarChanged)
+      };
+      reader.readAsDataURL(input.files[0]);
+  }
+
   console.log(uid);
 
   return (
@@ -111,11 +124,11 @@ export const UserProfile = () => {
           <Avatar
             style={{ width: "300px", height: "300px" }}
             alt="avatar"
-            src={
-              (user !== null && user.uid === params.userID) ||
+            src={avatarChanged ||
+              ((user !== null && user.uid === params.userID) ||
               uid === params.userID
                 ? detailsUser.avatar
-                : aboutUser.avatar
+                : aboutUser.avatar)
             }
           />
           {(user !== null && user.uid === params.userID) ||
@@ -130,7 +143,7 @@ export const UserProfile = () => {
                   <PageviewIcon />
                 </Avatar>
               </label>
-              <input style={{ display: "none" }} id="changePhoto" type="file" />
+              <input style={{ display: "none" }} id="changePhoto" type="file" onChange={handleChangeAvatar}/>
             </div>
           ) : null}
         </AvatarContainer>
