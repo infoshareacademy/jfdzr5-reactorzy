@@ -91,7 +91,6 @@ export const UserProfile = () => {
         ...detailsUser,
         [event.target.name]: event.target.value,
       });
-      // setDetailsUser(aboutUser);
       const userDetails = doc(db, "userDetails", user.uid);
       await updateDoc(userDetails, {
         ...detailsUser,
@@ -106,7 +105,6 @@ export const UserProfile = () => {
     } else if (editMode) {
       changeEditMode(false);
     }
-    // console.log(editMode);
   };
 
 
@@ -129,29 +127,14 @@ export const UserProfile = () => {
         ).then((url) => {
           setDetailsUser({
             ...detailsUser,
-            momentaryAvatar: url
+            avatar: url
           });
           console.log(detailsUser)
-          // setCurrentAvatar(url);
         });
       });
       changeAvatarInFirebase(event.target.files[0]);
       
   };
-
-
-/*   const handleChangeAvatar = (event) => {
-      const input = event.target;
-      const reader = new FileReader();
-      reader.onload = function(){
-        setAvatartChanged(reader.result);
-      };
-      reader.readAsDataURL(input.files[0]);
-      setNewAvatar(event.target.files[0]);
-      console.log(newAvatar)
-
-        changeAvatarInFirebase(event.target.files[0]);
-  } */
 
   const changeAvatarInFirebase = async (neew) => {
     const storageRef = ref(storage, `avatars/${user.uid}`);
@@ -166,7 +149,7 @@ export const UserProfile = () => {
   console.log(uid);
   console.log(detailsUser);
 
-  return (
+  return user ? (
     <Paper elevation={3} sx={{ p: "20px" }}>
       <div className="profil-avatar-container">
         <AvatarContainer>
@@ -308,6 +291,8 @@ export const UserProfile = () => {
         ) : null}
       </div>
     </Paper>
+  ) : (
+    <></>
   );
 };
 
