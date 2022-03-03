@@ -4,6 +4,9 @@ import { useParams } from "react-router-dom";
 import "./userView.css";
 import { doc, updateDoc, getFirestore, getDoc } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { ref, uploadBytes } from "firebase/storage";
+// import { storage } from "../../../../index";
+import { storage } from "../../index";
 import { db } from "../../index";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
@@ -43,7 +46,8 @@ export const UserProfile = () => {
   );
   console.log(detailsUser);
   const [editMode, changeEditMode] = useState(false);
-  const [avatarChanged, setAvatartChanged] = useState(null)
+  const [avatarChanged, setAvatartChanged] = useState(null);
+  const [newAvatar, setNewAvatar] = useState(null);
 
   const { name, technologies, about, avatar } = detailsUser;
 
@@ -108,11 +112,23 @@ export const UserProfile = () => {
       const reader = new FileReader();
       reader.onload = function(){
         setAvatartChanged(reader.result);
-        // const output = document.getElementById('output');
-        // output.src = dataURL;
-        console.log('avatar change to => ', avatarChanged)
       };
       reader.readAsDataURL(input.files[0]);
+      setNewAvatar(event.target.files[0]);
+      console.log(newAvatar)
+
+        changeAvatarInFirebase(event.target.files[0]);
+
+  }
+
+  const changeAvatarInFirebase = async (neew) => {
+    const storageRef = ref(storage, `avatars/${user.uid}`);
+    uploadBytes(storageRef, neew)
+      .then((snapshot) => {
+        console.log("Uploaded a blob or file!", neew);
+        console.log(newAvatar)
+        setNewAvatar(neew);
+      })
   }
 
   console.log(uid);
