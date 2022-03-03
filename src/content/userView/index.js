@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import "./userView.css";
 import { doc, updateDoc, getFirestore, getDoc } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 // import { storage } from "../../../../index";
 import { storage } from "../../index";
 import { db } from "../../index";
@@ -48,6 +48,8 @@ export const UserProfile = () => {
   const [editMode, changeEditMode] = useState(false);
   const [avatarChanged, setAvatartChanged] = useState(null);
   const [newAvatar, setNewAvatar] = useState(null);
+  const [avatarFile, setAvatarFile] = useState("");
+  const [currentAvatar, setCurrentAvatar] = useState("");
 
   const { name, technologies, about, avatar } = detailsUser;
 
@@ -107,7 +109,33 @@ export const UserProfile = () => {
     // console.log(editMode);
   };
 
-  const handleChangeAvatar = (event) => {
+
+  const handleChangeAvatar = async (event) => {
+    setAvatarFile(event.target.files[0]);
+    const currentAvatartStoragePath = Math.floor(Math.random() * 1000000);
+    console.log(currentAvatartStoragePath);
+
+    const storageRef = ref(
+      storage,
+      `momentaryAvatars/${currentAvatartStoragePath}`
+    );
+    uploadBytes(storageRef, event.target.files[0])
+      .then((snapshot) => {
+        console.log("Uploaded a blob or file!", event.target.files[0]);
+      })
+      .then(() => {
+        getDownloadURL(
+          ref(storage, `momentaryAvatars/${currentAvatartStoragePath}`)
+        ).then((url) => {
+          setCurrentAvatar(url);
+        });
+      });
+      changeAvatarInFirebase(event.target.files[0]);
+      
+  };
+
+
+/*   const handleChangeAvatar = (event) => {
       const input = event.target;
       const reader = new FileReader();
       reader.onload = function(){
@@ -118,8 +146,7 @@ export const UserProfile = () => {
       console.log(newAvatar)
 
         changeAvatarInFirebase(event.target.files[0]);
-
-  }
+  } */
 
   const changeAvatarInFirebase = async (neew) => {
     const storageRef = ref(storage, `avatars/${user.uid}`);
@@ -140,7 +167,7 @@ export const UserProfile = () => {
           <Avatar
             style={{ width: "300px", height: "300px" }}
             alt="avatar"
-            src={avatarChanged ||
+            src={currentAvatar ||
               ((user !== null && user.uid === params.userID) ||
               uid === params.userID
                 ? detailsUser.avatar
