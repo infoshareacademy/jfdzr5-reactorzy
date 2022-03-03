@@ -1,12 +1,12 @@
 import React from "react";
 import { CreatePostInput } from "../../posts/CreatePostInput";
-import TextPost from "../../posts/Post";
+import PostList from "../../posts/index";
 
 const MainView = () => {
   return (
     <div>
       <CreatePostInput />
-      <TextPost />
+      <PostList />
     </div>
   );
 };

@@ -16,6 +16,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CommentIcon from "@mui/icons-material/Comment";
 import { prominent } from "color.js";
+import { getBlob, getStorage, ref } from "firebase/storage";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -28,10 +29,20 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function RecipeReviewCard() {
+export default function Post({
+  postID,
+  comments,
+  likes,
+  picture,
+  technologies,
+  timestamp,
+  title,
+  userID,
+  content,
+}) {
   const [expanded, setExpanded] = useState(false);
   const [imageColor, setImageColor] = useState(0);
-  const [imgRef, setImgRef] = useState("https://picsum.photos/400");
+  const [imgSrc, setImgSrc] = useState(null);
 
   useEffect(() => {
     prominent("https://dummyimage.com/300/09f/fff.png", {
@@ -40,16 +51,23 @@ export default function RecipeReviewCard() {
     }).then((c) => {
       setImageColor(c);
     });
-  }, []);
+    if (picture) {
+      const storage = getStorage();
+      const imgRef = ref(storage, picture);
+      console.log(imgRef);
+      console.log(getBlob(imgRef));
+      // setImgSrc(getBlob(imgRef));
+      // getBlob(imgRef).then((e) => console.log(e));
+    }
+  }, [picture]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-
-  console.log(imageColor);
   return (
     <>
       <Card
+        key={postID}
         sx={{
           maxWidth: 590,
           minWidth: 320,
@@ -72,8 +90,8 @@ export default function RecipeReviewCard() {
             </IconButton>
           }
           // Pull title and date posted
-          title="Shrimp and Chorizo Paella"
-          subheader="September 14, 2016"
+          title={userID}
+          // subheader={timestamp.toDateString()}
         />
         {/* Add check if post is with picture */}
         <div
@@ -83,58 +101,64 @@ export default function RecipeReviewCard() {
             backgroundColor: `${imageColor}`,
           }}
         >
-          <CardMedia
-            component="img"
-            sx={{
-              maxHeight: "400px",
-              minWidth: "300px",
-              minHeight: "200px",
-              height: "auto",
-              width: "auto",
-            }}
-            image="https://dummyimage.com/300/09f/fff.png"
-            alt="Paella dish"
-          />
+          {picture && (
+            <CardMedia
+              component="img"
+              sx={{
+                maxHeight: "400px",
+                minWidth: "300px",
+                minHeight: "200px",
+                height: "auto",
+                width: "auto",
+              }}
+              image={imgSrc}
+              alt=""
+            />
+          )}
         </div>
         <CardContent>
           {/* Main content, add check over length to spill to  */}
-          <Typography variant="body2" color="text.secondary">
-            This impressive paella is a perfect party dish and a fun meal to
-            cook together with your guests. Add 1 cup of frozen peas along with
-            the mussels, if you like.
+          <Typography variant="h5" color="text.secondary">
+            {title}
+          </Typography>
+          <Typography variant="body" color="text.secondary">
+            {content}
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
-          {/* Add link to db likes */}
-          <IconButton aria-label="add to favorites">
+          <IconButton aria-label="like">
             <FavoriteIcon />
           </IconButton>
-          {/* Add link to db comments */}
-
+          <Typography variant="body">{likes.length}</Typography>
           <IconButton aria-label="comment">
             <CommentIcon />
           </IconButton>
+          <Typography variant="body">{comments.length}</Typography>
           {/* Add share options */}
 
           <IconButton aria-label="share">
             <ShareIcon />
           </IconButton>
-          <ExpandMore
-            expand={expanded}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            <ExpandMoreIcon />
-          </ExpandMore>
+          {comments && (
+            <ExpandMore
+              expand={expanded}
+              onClick={handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="show more"
+            >
+              <ExpandMoreIcon />
+            </ExpandMore>
+          )}
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <CardContent>
-            <Typography paragraph>
-              Heat 1/2 cup of the broth in a pot until simmering, add saffron
-              and set aside for 10 minutes.
-            </Typography>
-          </CardContent>
+          {comments &&
+            comments.map((e) => {
+              return (
+                <CardContent key={e.userID}>
+                  <Typography paragraph>{e.content}</Typography>
+                </CardContent>
+              );
+            })}
         </Collapse>
       </Card>
     </>

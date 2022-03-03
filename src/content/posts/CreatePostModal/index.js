@@ -29,10 +29,10 @@ export const CreatePostModal = ({ open, setOpen }) => {
       comments: [],
       content: content,
       likes: [],
+      picture: null,
       technologies: [],
       timestamp: date,
       title: title,
-      userAvatar: "avatarUrl",
       userID: user.uid,
     });
 
