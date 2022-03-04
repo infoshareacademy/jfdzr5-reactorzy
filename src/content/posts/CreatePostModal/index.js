@@ -19,7 +19,6 @@ export const CreatePostModal = ({ open, setOpen }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const date = new Date();
     const formData = new FormData(e.target);
     const title = formData.get("title");
@@ -29,11 +28,12 @@ export const CreatePostModal = ({ open, setOpen }) => {
       comments: [],
       content: content,
       likes: [],
+      picture: null,
       technologies: [],
       timestamp: date,
       title: title,
-      userAvatar: "avatarUrl",
       userID: user.uid,
+      displayName: user.displayName,
     });
 
     if (image) {
@@ -42,7 +42,9 @@ export const CreatePostModal = ({ open, setOpen }) => {
       updateDoc(postRef, {
         picture: pictureUploadRef.fullPath,
       });
+      setOpen(false);
     }
+    setOpen(false);
   };
   return imageData ? (
     <div>

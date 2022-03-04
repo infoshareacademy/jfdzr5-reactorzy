@@ -54,7 +54,7 @@ const ImageContainer = styled.div`
 const style = {
   position: "absolute",
   height: "70%",
-  minWidth: "400px",
+  minWidth: "300px",
   minHeight: "600px",
   width: "30%",
   top: "50%",
