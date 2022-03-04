@@ -6,12 +6,13 @@ import Loading from "../../common/loading";
 
 const PostList = () => {
   const db = getFirestore();
-  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"));
   const [isLoading, setIsLoading] = useState(true);
   const [postsList, setPostsList] = useState([]);
 
   useEffect(() => {
     let posts = [];
+    const q = query(collection(db, "posts"), orderBy("timestamp", "desc"));
+
     const fetchPosts = async () => {
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => posts.push([doc.id, doc.data()]));
@@ -19,8 +20,7 @@ const PostList = () => {
       setPostsList(posts);
     };
     fetchPosts();
-    console.log("hi");
-  }, []);
+  }, [db]);
   return isLoading ? (
     <Loading />
   ) : (
