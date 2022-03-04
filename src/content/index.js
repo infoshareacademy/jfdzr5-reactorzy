@@ -8,7 +8,7 @@ export const Content = () => {
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/sign-up" element={<SignUp />} />
-      <Route path="user" element={<UserProfile />} />
+      <Route path="user/:userID" element={<UserProfile />} />
     </Routes>
   );
 };
