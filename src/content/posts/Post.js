@@ -48,6 +48,15 @@ export default function Post({
   const [avatar, setAvatar] = useState(null);
   const db = getFirestore();
   const { user } = useUserContext();
+  const [likeClicked, setLikeClicked] = useState(
+    likes.find(({ userID }) => userID === user.uid)
+  );
+  const [likesLength, setLikesLength] = useState(
+    likes.length > 0 ? likes.length : null
+  );
+
+  console.log(likes);
+  console.log(likes.find(({ userID }) => userID === user.uid));
 
   useEffect(() => {
     const storage = getStorage();
@@ -99,6 +108,18 @@ export default function Post({
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+  const handleDislike = async () => {
+    const postRef = doc(db, "posts", postID);
+    await updateDoc(postRef, {
+      likes: [
+        ...likes.filter((e) =>
+          Object.values(e).includes(user.uid) ? false : true
+        ),
+      ],
+    });
+    setLikeClicked(false);
+    setLikesLength(likesLength - 1 > 0 ? likesLength - 1 : null);
+  };
 
   const handleLike = async () => {
     const postRef = doc(db, "posts", postID);
@@ -110,6 +131,8 @@ export default function Post({
         { userID: user.uid },
       ],
     });
+    setLikeClicked(true);
+    setLikesLength(likesLength + 1);
   };
   return (
     <>
@@ -184,12 +207,16 @@ export default function Post({
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
-          <IconButton aria-label="like" onClick={handleLike}>
-            <FavoriteIcon />
-          </IconButton>
-          <Typography variant="body">
-            {likes.length > 0 ? likes.length : ""}
-          </Typography>
+          {likeClicked ? (
+            <IconButton aria-label="like" onClick={handleDislike}>
+              <FavoriteIcon sx={{ color: "red" }} />
+            </IconButton>
+          ) : (
+            <IconButton aria-label="like" onClick={handleLike}>
+              <FavoriteIcon />
+            </IconButton>
+          )}
+          <Typography variant="body">{likesLength}</Typography>
           <IconButton aria-label="comment">
             <CommentIcon />
           </IconButton>
