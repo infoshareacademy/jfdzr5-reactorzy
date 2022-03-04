@@ -18,6 +18,7 @@ import { prominent } from "color.js";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 import { useUserContext } from "../../services/user-context";
+import { CreateCommentInput } from "./CreateCommentInput";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -248,6 +249,7 @@ export default function Post({
                 </CardContent>
               );
             })}
+          <CreateCommentInput />
         </Collapse>
       </Card>
     </>
