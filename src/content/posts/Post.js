@@ -16,7 +16,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CommentIcon from "@mui/icons-material/Comment";
 import { prominent } from "color.js";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
+import { useUserContext } from "../../services/user-context";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -45,6 +46,8 @@ export default function Post({
   const [imgSrc, setImgSrc] = useState(null);
   const [userName, setUserName] = useState(null);
   const [avatar, setAvatar] = useState(null);
+  const db = getFirestore();
+  const { user } = useUserContext();
 
   useEffect(() => {
     const storage = getStorage();
@@ -77,7 +80,6 @@ export default function Post({
       }
     }
     const fetchUserData = async () => {
-      const db = getFirestore();
       const docRef = doc(db, "userDetails", userID);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
@@ -92,10 +94,22 @@ export default function Post({
     };
     fetchUserData();
     console.log("bye");
-  }, [picture, imgSrc, userID]);
+  }, [picture, imgSrc, userID, db]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
+  };
+
+  const handleLike = async () => {
+    const postRef = doc(db, "posts", postID);
+    await updateDoc(postRef, {
+      likes: [
+        ...likes.filter((e) =>
+          Object.values(e).includes(user.uid) ? false : true
+        ),
+        { userID: user.uid },
+      ],
+    });
   };
   return (
     <>
@@ -170,7 +184,7 @@ export default function Post({
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
-          <IconButton aria-label="like">
+          <IconButton aria-label="like" onClick={handleLike}>
             <FavoriteIcon />
           </IconButton>
           <Typography variant="body">

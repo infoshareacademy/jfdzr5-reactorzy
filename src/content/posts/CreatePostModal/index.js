@@ -36,6 +36,12 @@ export const CreatePostModal = ({ open, setOpen }) => {
       displayName: user.displayName,
     });
 
+    const assignPostID = await updateDoc(postRef, {
+      postID: postRef.id,
+    });
+
+    assignPostID();
+
     if (image) {
       const pictureUploadRef = ref(storage, `posts/${postRef.id}`);
       uploadBytes(pictureUploadRef, image);
@@ -46,6 +52,7 @@ export const CreatePostModal = ({ open, setOpen }) => {
     }
     setOpen(false);
   };
+
   return imageData ? (
     <div>
       <ImagePost
