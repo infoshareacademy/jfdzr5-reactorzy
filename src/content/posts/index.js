@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 import Post from "./Post";
 import Loading from "../../common/loading";
 
 const PostList = () => {
   const db = getFirestore();
-  // const q = query(collection(db, "cities"), where("capital", "==", true));
+  const q = query(collection(db, "posts"), orderBy("timestamp", "desc"));
   const [isLoading, setIsLoading] = useState(true);
   const [postsList, setPostsList] = useState([]);
-  let posts = [];
 
   useEffect(() => {
+    let posts = [];
     const fetchPosts = async () => {
-      const querySnapshot = await getDocs(collection(db, "posts"));
-      console.log(querySnapshot);
+      const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => posts.push([doc.id, doc.data()]));
       setIsLoading(false);
       setPostsList(posts);
     };
     fetchPosts();
-  }, [db]);
+    console.log("hi");
+  }, []);
   return isLoading ? (
     <Loading />
   ) : (

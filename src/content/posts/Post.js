@@ -9,7 +9,6 @@ import Collapse from "@mui/material/Collapse";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import { red } from "@mui/material/colors";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -44,22 +43,38 @@ export default function Post({
   const [expanded, setExpanded] = useState(false);
   const [imageColor, setImageColor] = useState(0);
   const [imgSrc, setImgSrc] = useState(null);
-  const [userName, setUserName] = useState(userID);
+  const [userName, setUserName] = useState(null);
+  const [avatar, setAvatar] = useState(null);
 
   useEffect(() => {
-    console.log(timestamp.toDate().toDateString());
+    const storage = getStorage();
+
     if (picture) {
-      const storage = getStorage();
-      const imgRef = ref(storage, picture);
-      getDownloadURL(ref(storage, imgRef)).then((url) => {
-        setImgSrc(url);
-        prominent(url, {
-          amount: 1,
-          format: "hex",
-        }).then((c) => {
-          setImageColor(c);
+      try {
+        const imgRef = ref(storage, picture);
+        if (imgRef) {
+          getDownloadURL(ref(storage, imgRef)).then((url) => {
+            setImgSrc(url);
+            prominent(url, {
+              amount: 1,
+              format: "hex",
+            }).then((c) => {
+              setImageColor(c);
+            });
+          });
+        }
+      } catch {
+        const imgRef = ref(storage, picture);
+        getDownloadURL(ref(storage, imgRef)).then((url) => {
+          setImgSrc(url);
+          prominent(url, {
+            amount: 1,
+            format: "hex",
+          }).then((c) => {
+            setImageColor(c);
+          });
         });
-      });
+      }
     }
     const fetchUserData = async () => {
       const db = getFirestore();
@@ -67,12 +82,16 @@ export default function Post({
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         setUserName(docSnap.data().name);
+        if (docSnap.data().avatar) {
+          setAvatar(docSnap.data().avatar);
+        }
       } else {
         // doc.data() will be undefined in this case
         console.log("No such document!");
       }
     };
     fetchUserData();
+    console.log("bye");
   }, [picture, imgSrc, userID]);
 
   const handleExpandClick = () => {
@@ -92,9 +111,11 @@ export default function Post({
         <CardHeader
           sx={{ padding: "12px 15px" }}
           avatar={
-            <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-              R
-            </Avatar>
+            avatar ? (
+              <Avatar src={avatar} aria-label="recipe" />
+            ) : (
+              <Avatar>{userName ? userName.charAt(1) : "T"}</Avatar>
+            )
           }
           action={
             <IconButton aria-label="settings">
@@ -152,11 +173,15 @@ export default function Post({
           <IconButton aria-label="like">
             <FavoriteIcon />
           </IconButton>
-          <Typography variant="body">{likes.length}</Typography>
+          <Typography variant="body">
+            {likes.length > 0 ? likes.length : ""}
+          </Typography>
           <IconButton aria-label="comment">
             <CommentIcon />
           </IconButton>
-          <Typography variant="body">{comments.length}</Typography>
+          <Typography variant="body">
+            {comments.length > 0 ? comments.length : ""}
+          </Typography>
           {/* Add share options */}
 
           <IconButton aria-label="share">
