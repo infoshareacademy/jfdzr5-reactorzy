@@ -19,6 +19,7 @@ import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 import { useUserContext } from "../../services/user-context";
 import { CreateCommentInput } from "./CreateCommentInput";
+import Comment from "./Comments";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -47,6 +48,7 @@ export default function Post({
   const [imgSrc, setImgSrc] = useState(null);
   const [userName, setUserName] = useState(null);
   const [avatar, setAvatar] = useState(null);
+
   const db = getFirestore();
   const { user } = useUserContext();
   const [likeClicked, setLikeClicked] = useState(
@@ -56,8 +58,9 @@ export default function Post({
     likes.length > 0 ? likes.length : null
   );
 
-  console.log(likes);
-  console.log(likes.find(({ userID }) => userID === user.uid));
+  const [commentsLength, setCommentsLength] = useState(
+    comments.length > 0 ? comments.length : null
+  );
 
   useEffect(() => {
     const storage = getStorage();
@@ -103,7 +106,6 @@ export default function Post({
       }
     };
     fetchUserData();
-    console.log("bye");
   }, [picture, imgSrc, userID, db]);
 
   const handleExpandClick = () => {
@@ -145,7 +147,6 @@ export default function Post({
           backgroundColor: "#f0f2f5",
         }}
       >
-        {/* Add user avatar check */}
         <CardHeader
           sx={{ padding: "12px 15px" }}
           avatar={
@@ -157,11 +158,9 @@ export default function Post({
           }
           action={
             <IconButton aria-label="settings">
-              {/* Add settings tab */}
               <MoreVertIcon />
             </IconButton>
           }
-          // Pull title and date posted
           title={userName}
           subheader={
             timestamp.toDate().toDateString() +
@@ -175,7 +174,6 @@ export default function Post({
               : timestamp.toDate().getMinutes())
           }
         />
-        {/* Add check if post is with picture */}
         <div
           style={{
             display: "flex",
@@ -218,12 +216,10 @@ export default function Post({
             </IconButton>
           )}
           <Typography variant="body">{likesLength}</Typography>
-          <IconButton aria-label="comment">
+          <IconButton aria-label="comment" onClick={handleExpandClick}>
             <CommentIcon />
           </IconButton>
-          <Typography variant="body">
-            {comments.length > 0 ? comments.length : ""}
-          </Typography>
+          <Typography variant="body">{commentsLength}</Typography>
           {/* Add share options */}
 
           <IconButton aria-label="share">
@@ -241,15 +237,19 @@ export default function Post({
           )}
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-          {comments &&
-            comments.map((e) => {
-              return (
-                <CardContent key={e.userID}>
-                  <Typography paragraph>{e.content}</Typography>
-                </CardContent>
-              );
-            })}
-          <CreateCommentInput />
+          <CreateCommentInput
+            postID={postID}
+            comments={comments}
+            setCommentsLength={setCommentsLength}
+            commentsLength={commentsLength}
+          />
+          {comments.map((e) => (
+            <Comment
+              content={e.content}
+              userID={e.userID}
+              timestamp={e.timestamp}
+            />
+          ))}
         </Collapse>
       </Card>
     </>

@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { Avatar } from "@mui/material";
+import { doc, updateDoc, getFirestore } from "firebase/firestore";
+import { useUserContext } from "../../services/user-context";
 
 const InputContainer = styled.div`
   max-width: 560px;
@@ -41,14 +43,34 @@ const Form = styled.form`
   align-items: center;
 `;
 
-export const CreateCommentInput = () => {
+export const CreateCommentInput = ({ postID, comments, setCommentsLength }) => {
+  const db = getFirestore();
+  const { user } = useUserContext();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    const postRef = doc(db, "posts", postID);
+    await updateDoc(postRef, {
+      comments: [
+        ...comments,
+        {
+          content: formData.get("content"),
+          timestamp: new Date(),
+          userID: user.uid,
+        },
+      ],
+    });
+    setCommentsLength(comments.length + 1);
+  };
   return (
     <>
       <InputContainer>
         <Avatar sx={{ mr: "10px", cursor: "pointer" }} />
-        <InputButton>
+
+        <InputButton onSubmit={handleSubmit}>
           <Form>
-            <InputText placeholder="Write a comment..." />
+            <InputText name="content" placeholder="Write a comment..." />
           </Form>
         </InputButton>
       </InputContainer>

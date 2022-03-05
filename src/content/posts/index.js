@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
+import { collection, query, getDocs, orderBy } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 import Post from "./Post";
 import Loading from "../../common/loading";
