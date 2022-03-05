@@ -35,6 +35,7 @@ export const CreatePostModal = ({ open, setOpen }) => {
       userID: user.uid,
       displayName: user.displayName,
     });
+    setOpen(false);
 
     if (image) {
       const pictureUploadRef = ref(storage, `posts/${postRef.id}`);
@@ -44,8 +45,8 @@ export const CreatePostModal = ({ open, setOpen }) => {
       });
       setOpen(false);
     }
-    setOpen(false);
   };
+
   return imageData ? (
     <div>
       <ImagePost

@@ -16,7 +16,17 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CommentIcon from "@mui/icons-material/Comment";
 import { prominent } from "color.js";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  getFirestore,
+  updateDoc,
+  onSnapshot,
+} from "firebase/firestore";
+import { useUserContext } from "../../services/user-context";
+import { CreateCommentInput } from "./CreateCommentInput";
+import Comment from "./Comments";
+import { NavLink } from "react-router-dom";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -45,6 +55,20 @@ export default function Post({
   const [imgSrc, setImgSrc] = useState(null);
   const [userName, setUserName] = useState(null);
   const [avatar, setAvatar] = useState(null);
+  const [commentsList, setCommentsList] = useState(comments);
+
+  const db = getFirestore();
+  const { user } = useUserContext();
+  const [likeClicked, setLikeClicked] = useState(
+    likes.find(({ userID }) => userID === user.uid)
+  );
+  const [likesLength, setLikesLength] = useState(
+    likes.length > 0 ? likes.length : null
+  );
+
+  const [commentsLength, setCommentsLength] = useState(
+    comments.length > 0 ? comments.length : null
+  );
 
   useEffect(() => {
     const storage = getStorage();
@@ -77,7 +101,6 @@ export default function Post({
       }
     }
     const fetchUserData = async () => {
-      const db = getFirestore();
       const docRef = doc(db, "userDetails", userID);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
@@ -91,11 +114,47 @@ export default function Post({
       }
     };
     fetchUserData();
-    console.log("bye");
-  }, [picture, imgSrc, userID]);
+    const unsub = onSnapshot(doc(db, "posts", postID), (doc) => {
+      console.log(doc.data());
+      setCommentsList(doc.data().comments);
+      setCommentsLength(
+        doc.data().comments.length > 0 ? doc.data().comments.length : ""
+      );
+      // setLikesLength(
+      //   doc.data().likes.length > 0 ? doc.data().likes.length : null
+      // );
+    });
+    console.log("hi");
+  }, [picture, imgSrc, userID, db, postID]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
+  };
+  const handleDislike = async () => {
+    const postRef = doc(db, "posts", postID);
+    await updateDoc(postRef, {
+      likes: [
+        ...likes.filter((e) =>
+          Object.values(e).includes(user.uid) ? false : true
+        ),
+      ],
+    });
+    setLikeClicked(false);
+    setLikesLength(likesLength - 1 > 0 ? likesLength - 1 : null);
+  };
+
+  const handleLike = async () => {
+    const postRef = doc(db, "posts", postID);
+    await updateDoc(postRef, {
+      likes: [
+        ...likes.filter((e) =>
+          Object.values(e).includes(user.uid) ? false : true
+        ),
+        { userID: user.uid },
+      ],
+    });
+    setLikeClicked(true);
+    setLikesLength(likesLength + 1);
   };
   return (
     <>
@@ -107,23 +166,24 @@ export default function Post({
           backgroundColor: "#f0f2f5",
         }}
       >
-        {/* Add user avatar check */}
         <CardHeader
           sx={{ padding: "12px 15px" }}
           avatar={
             avatar ? (
-              <Avatar src={avatar} aria-label="recipe" />
+              <NavLink to={`/user/${userID}`}>
+                <Avatar src={avatar} aria-label="recipe" />
+              </NavLink>
             ) : (
-              <Avatar>{userName ? userName.charAt(1) : "T"}</Avatar>
+              <NavLink to={`/user/${userID}`}>
+                <Avatar />
+              </NavLink>
             )
           }
           action={
             <IconButton aria-label="settings">
-              {/* Add settings tab */}
               <MoreVertIcon />
             </IconButton>
           }
-          // Pull title and date posted
           title={userName}
           subheader={
             timestamp.toDate().toDateString() +
@@ -137,7 +197,6 @@ export default function Post({
               : timestamp.toDate().getMinutes())
           }
         />
-        {/* Add check if post is with picture */}
         <div
           style={{
             display: "flex",
@@ -170,18 +229,20 @@ export default function Post({
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
-          <IconButton aria-label="like">
-            <FavoriteIcon />
-          </IconButton>
-          <Typography variant="body">
-            {likes.length > 0 ? likes.length : ""}
-          </Typography>
-          <IconButton aria-label="comment">
+          {likeClicked ? (
+            <IconButton aria-label="like" onClick={handleDislike}>
+              <FavoriteIcon sx={{ color: "red" }} />
+            </IconButton>
+          ) : (
+            <IconButton aria-label="like" onClick={handleLike}>
+              <FavoriteIcon />
+            </IconButton>
+          )}
+          <Typography variant="body">{likesLength}</Typography>
+          <IconButton aria-label="comment" onClick={handleExpandClick}>
             <CommentIcon />
           </IconButton>
-          <Typography variant="body">
-            {comments.length > 0 ? comments.length : ""}
-          </Typography>
+          <Typography variant="body">{commentsLength}</Typography>
           {/* Add share options */}
 
           <IconButton aria-label="share">
@@ -199,14 +260,24 @@ export default function Post({
           )}
         </CardActions>
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-          {comments &&
-            comments.map((e) => {
-              return (
-                <CardContent key={e.userID}>
-                  <Typography paragraph>{e.content}</Typography>
-                </CardContent>
-              );
-            })}
+          <CreateCommentInput
+            postID={postID}
+            comments={comments}
+            setCommentsLength={setCommentsLength}
+            commentsLength={commentsLength}
+            avatar={avatar}
+            userID={userID}
+            userName={userName}
+            setCommentsList={setCommentsList}
+            commentsList={commentsList}
+          />
+          {commentsList.map((e) => (
+            <Comment
+              content={e.content}
+              userID={e.userID}
+              timestamp={e.timestamp}
+            />
+          ))}
         </Collapse>
       </Card>
     </>
