@@ -13,7 +13,7 @@ const InputContainer = styled.div`
   display: flex;
   justify-content: center;
   padding: 12px 15px;
-  margin-bottom: 10px;
+  margin: 0 auto 10px;
   box-shadow: 2px 3px 5px grey;
 `;
 

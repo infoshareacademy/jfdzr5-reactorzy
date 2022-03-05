@@ -165,7 +165,7 @@ export default function Post({
           borderRadius: "15px",
           backgroundColor: "#f0f2f5",
           width: "100%",
-          margin: "10px 0",
+          margin: "10px auto",
           boxShadow: "2px 3px 10px grey",
         }}
       >
