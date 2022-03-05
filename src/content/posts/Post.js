@@ -115,7 +115,14 @@ export default function Post({
     };
     fetchUserData();
     const unsub = onSnapshot(doc(db, "posts", postID), (doc) => {
+      console.log(doc.data());
       setCommentsList(doc.data().comments);
+      setCommentsLength(
+        doc.data().comments.length > 0 ? doc.data().comments.length : ""
+      );
+      // setLikesLength(
+      //   doc.data().likes.length > 0 ? doc.data().likes.length : null
+      // );
     });
     console.log("hi");
   }, [picture, imgSrc, userID, db, postID]);

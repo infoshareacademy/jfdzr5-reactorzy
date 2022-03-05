@@ -47,37 +47,28 @@ const Form = styled.form`
 export const CreateCommentInput = ({
   postID,
   comments,
-  setCommentsLength,
   avatar,
   userName,
   userID,
   commentsList,
-  setCommentsList,
 }) => {
   const db = getFirestore();
   const { user, detailsUser } = useUserContext();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
 
     const postRef = doc(db, "posts", postID);
     await updateDoc(postRef, {
       comments: [
-        ...comments,
+        ...commentsList,
         {
-          content: formData.get("content"),
+          content: e.target.content.value,
           timestamp: new Date(),
           userID: user.uid,
         },
       ],
     });
-    setCommentsLength(comments.length + 1);
-    commentsList.push({
-      content: formData.get("content"),
-      timestamp: new Date(),
-      userID: user.uid,
-    });
-    setCommentsList(commentsList);
+    e.target.content.value = "";
   };
   return (
     <>
