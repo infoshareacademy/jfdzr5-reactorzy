@@ -16,10 +16,17 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CommentIcon from "@mui/icons-material/Comment";
 import { prominent } from "color.js";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
-import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  getFirestore,
+  updateDoc,
+  onSnapshot,
+} from "firebase/firestore";
 import { useUserContext } from "../../services/user-context";
 import { CreateCommentInput } from "./CreateCommentInput";
 import Comment from "./Comments";
+import { NavLink } from "react-router-dom";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -48,6 +55,7 @@ export default function Post({
   const [imgSrc, setImgSrc] = useState(null);
   const [userName, setUserName] = useState(null);
   const [avatar, setAvatar] = useState(null);
+  const [commentsList, setCommentsList] = useState(comments);
 
   const db = getFirestore();
   const { user } = useUserContext();
@@ -106,7 +114,11 @@ export default function Post({
       }
     };
     fetchUserData();
-  }, [picture, imgSrc, userID, db]);
+    const unsub = onSnapshot(doc(db, "posts", postID), (doc) => {
+      setCommentsList(doc.data().comments);
+    });
+    console.log("hi");
+  }, [picture, imgSrc, userID, db, postID]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -151,9 +163,13 @@ export default function Post({
           sx={{ padding: "12px 15px" }}
           avatar={
             avatar ? (
-              <Avatar src={avatar} aria-label="recipe" />
+              <NavLink to={`/user/${userID}`}>
+                <Avatar src={avatar} aria-label="recipe" />
+              </NavLink>
             ) : (
-              <Avatar>{userName ? userName.charAt(1) : "T"}</Avatar>
+              <NavLink to={`/user/${userID}`}>
+                <Avatar />
+              </NavLink>
             )
           }
           action={
@@ -242,8 +258,13 @@ export default function Post({
             comments={comments}
             setCommentsLength={setCommentsLength}
             commentsLength={commentsLength}
+            avatar={avatar}
+            userID={userID}
+            userName={userName}
+            setCommentsList={setCommentsList}
+            commentsList={commentsList}
           />
-          {comments.map((e) => (
+          {commentsList.map((e) => (
             <Comment
               content={e.content}
               userID={e.userID}

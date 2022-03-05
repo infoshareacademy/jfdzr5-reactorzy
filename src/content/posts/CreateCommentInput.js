@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Avatar } from "@mui/material";
 import { doc, updateDoc, getFirestore } from "firebase/firestore";
 import { useUserContext } from "../../services/user-context";
+import { NavLink } from "react-router-dom";
 
 const InputContainer = styled.div`
   max-width: 560px;
@@ -43,9 +44,18 @@ const Form = styled.form`
   align-items: center;
 `;
 
-export const CreateCommentInput = ({ postID, comments, setCommentsLength }) => {
+export const CreateCommentInput = ({
+  postID,
+  comments,
+  setCommentsLength,
+  avatar,
+  userName,
+  userID,
+  commentsList,
+  setCommentsList,
+}) => {
   const db = getFirestore();
-  const { user } = useUserContext();
+  const { user, detailsUser } = useUserContext();
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -62,12 +72,25 @@ export const CreateCommentInput = ({ postID, comments, setCommentsLength }) => {
       ],
     });
     setCommentsLength(comments.length + 1);
+    commentsList.push({
+      content: formData.get("content"),
+      timestamp: new Date(),
+      userID: user.uid,
+    });
+    setCommentsList(commentsList);
   };
   return (
     <>
       <InputContainer>
-        <Avatar sx={{ mr: "10px", cursor: "pointer" }} />
-
+        {detailsUser.avatar ? (
+          <NavLink to={`/user/${userID}`}>
+            <Avatar src={detailsUser.avatar} aria-label="recipe" />
+          </NavLink>
+        ) : (
+          <NavLink to={`/user/${userID}`}>
+            <Avatar />
+          </NavLink>
+        )}
         <InputButton onSubmit={handleSubmit}>
           <Form>
             <InputText name="content" placeholder="Write a comment..." />

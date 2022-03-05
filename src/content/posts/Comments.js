@@ -9,6 +9,24 @@ const Comment = ({ content, userID, timestamp }) => {
   const db = getFirestore();
   const [userName, setUserName] = useState(null);
   const [avatar, setAvatar] = useState(null);
+  let date = "Now";
+  const getDate = () => {
+    try {
+      date =
+        timestamp.toDate().toDateString() +
+        " " +
+        (timestamp.toDate().getHours() < 10
+          ? "0" + timestamp.toDate().getHours()
+          : timestamp.toDate().getHours()) +
+        ":" +
+        (timestamp.toDate().getMinutes() < 10
+          ? "0" + timestamp.toDate().getMinutes()
+          : timestamp.toDate().getMinutes());
+    } catch {
+      date = "Now";
+    }
+  };
+  getDate();
   useEffect(() => {
     const fetchUserData = async () => {
       const docRef = doc(db, "userDetails", userID);
@@ -36,7 +54,7 @@ const Comment = ({ content, userID, timestamp }) => {
             </NavLink>
           ) : (
             <NavLink to={`/user/${userID}`}>
-              <Avatar>{userName ? userName.charAt(1) : "T"}</Avatar>
+              <Avatar />
             </NavLink>
           )
         }
@@ -53,17 +71,7 @@ const Comment = ({ content, userID, timestamp }) => {
             {userName}
           </NavLink>
         }
-        subheader={
-          timestamp.toDate().toDateString() +
-          " " +
-          (timestamp.toDate().getHours() < 10
-            ? "0" + timestamp.toDate().getHours()
-            : timestamp.toDate().getHours()) +
-          ":" +
-          (timestamp.toDate().getMinutes() < 10
-            ? "0" + timestamp.toDate().getMinutes()
-            : timestamp.toDate().getMinutes())
-        }
+        subheader={date}
       />
       <CardContent
         key={userID}
@@ -76,7 +84,7 @@ const Comment = ({ content, userID, timestamp }) => {
             backgroundColor: "lightgrey",
             borderRadius: "20px",
             height: "100%",
-            padding: "10px",
+            padding: "7px 12px",
           }}
         >
           {content}
