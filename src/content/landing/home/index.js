@@ -4,7 +4,14 @@ import PostList from "../../posts/index";
 
 const MainView = () => {
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        width: "100%",
+      }}
+    >
       <CreatePostInput />
       <PostList />
     </div>

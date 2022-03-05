@@ -6,12 +6,15 @@ import { CreatePostModal } from "./CreatePostModal";
 const InputContainer = styled.div`
   max-width: 560px;
   min-width: 320px;
+  width: 100%;
   border-radius: 15px;
   height: 40px;
   background-color: #f0f2f5;
   display: flex;
   justify-content: center;
   padding: 12px 15px;
+  margin-bottom: 10px;
+  box-shadow: 2px 3px 5px grey;
 `;
 
 const InputButton = styled.div`
