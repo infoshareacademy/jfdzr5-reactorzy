@@ -102,6 +102,7 @@ const TextPost = ({
         />
         <form style={{ width: "100%", height: "100%" }} onSubmit={handleSubmit}>
           <TitleInput placeholder="Post title" required name="title" />
+
           <ContentInput placeholder="Post content" required name="content" />
           <div style={{ display: "flex", justifyContent: "center" }}>
             <label htmlFor="upload-button">

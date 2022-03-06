@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Paper from '@mui/material/Paper';
+import Paper from "@mui/material/Paper";
 
 const ContainerDashboardInfo = styled.div`
   display: flex;
@@ -58,38 +58,32 @@ const BoldInformation = styled.span`
 
 // To-do: Add animation to counters
 
-const DashboardData = ({ totalUsersRegistered }) => {
+const DashboardData = ({ totalUsersRegistered, totalPosts }) => {
   return (
-    <Paper elevation={14} sx={{ bgcolor: '#f0f2f5', height: '100%'}}>
-    <ContainerDashboardInfo>
-      <DashboardInfo>
-        <ContainerName>
-          <Name>Koffee</Name>
-          <SubTitle>
-            powered by <strong>Reactorzy</strong>
-          </SubTitle>
-        </ContainerName>
-        <InformationDashboard>
-          <Icon>
-            <i className="fas fa-mail-bulk"></i>
-          </Icon>
-          <BoldInformation>6420</BoldInformation>written posts
-        </InformationDashboard>
-        <InformationDashboard>
-          <Icon>
-            <i className="fas fa-comments"></i>
-          </Icon>
-          <BoldInformation>526980</BoldInformation>written comments
-        </InformationDashboard>
-        <InformationDashboard>
-          <Icon>
-            <i className="fas fa-users"></i>
-          </Icon>
-          <BoldInformation>{totalUsersRegistered}</BoldInformation> registered
-          users
-        </InformationDashboard>
-      </DashboardInfo>
-    </ContainerDashboardInfo>
+    <Paper elevation={14} sx={{ bgcolor: "#f0f2f5", height: "100%" }}>
+      <ContainerDashboardInfo>
+        <DashboardInfo>
+          <ContainerName>
+            <Name>Koffee</Name>
+            <SubTitle>
+              powered by <strong>Reactorzy</strong>
+            </SubTitle>
+          </ContainerName>
+          <InformationDashboard>
+            <Icon>
+              <i className="fas fa-mail-bulk"></i>
+            </Icon>
+            <BoldInformation>{totalPosts}</BoldInformation>written posts
+          </InformationDashboard>
+          <InformationDashboard>
+            <Icon>
+              <i className="fas fa-users"></i>
+            </Icon>
+            <BoldInformation>{totalUsersRegistered}</BoldInformation> registered
+            users
+          </InformationDashboard>
+        </DashboardInfo>
+      </ContainerDashboardInfo>
     </Paper>
   );
 };
