@@ -4,6 +4,8 @@ import {
   addDoc,
   getFirestore,
   updateDoc,
+  doc,
+  getDoc,
 } from "firebase/firestore";
 import { useUserContext } from "../../../services/user-context";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
@@ -16,6 +18,8 @@ export const CreatePostModal = ({ open, setOpen }) => {
   const storage = getStorage();
   const [imageData, setImageData] = useState(null);
   const [image, setImage] = useState(null);
+  const [titleData, setTitleData] = useState("");
+  const [contentData, setContentData] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,6 +41,25 @@ export const CreatePostModal = ({ open, setOpen }) => {
     });
     setOpen(false);
 
+    const updatePostCount = async () => {
+      let posts = 0;
+
+      const postsRef = doc(db, "users", "postsMade");
+
+      const postsSnap = await getDoc(postsRef);
+      if (postsSnap.exists()) {
+        posts = postsSnap.data().posts;
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+      }
+      await updateDoc(postRef, {
+        posts: posts++,
+      });
+    };
+
+    updatePostCount();
+
     if (image) {
       const pictureUploadRef = ref(storage, `posts/${postRef.id}`);
       uploadBytes(pictureUploadRef, image);
@@ -56,6 +79,10 @@ export const CreatePostModal = ({ open, setOpen }) => {
         handleSubmit={handleSubmit}
         setImage={setImage}
         imageData={imageData}
+        contentData={contentData}
+        setContentData={setContentData}
+        titleData={titleData}
+        setTitleData={setTitleData}
       />
     </div>
   ) : (
@@ -67,6 +94,10 @@ export const CreatePostModal = ({ open, setOpen }) => {
         handleSubmit={handleSubmit}
         imageData={imageData}
         setImageData={setImageData}
+        contentData={contentData}
+        setContentData={setContentData}
+        titleData={titleData}
+        setTitleData={setTitleData}
       />
     </div>
   );

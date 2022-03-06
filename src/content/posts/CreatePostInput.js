@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Avatar } from "@mui/material";
 import { CreatePostModal } from "./CreatePostModal";
+import { useUserContext } from "../../services/user-context";
 
 const InputContainer = styled.div`
   max-width: 560px;
@@ -36,11 +37,13 @@ const InputText = styled.span`
 
 export const CreatePostInput = () => {
   const [open, setOpen] = useState(false);
+  const { detailsUser } = useUserContext();
+  const avatar = detailsUser.avatar;
 
   return (
     <>
       <InputContainer>
-        <Avatar sx={{ mr: "10px", cursor: "pointer" }} />
+        <Avatar src={avatar} sx={{ mr: "10px", cursor: "pointer" }} />
         <InputButton onClick={() => setOpen(true)}>
           <InputText>Start a post</InputText>
         </InputButton>

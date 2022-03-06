@@ -11,7 +11,7 @@ import SignInForm from "../SignInForm";
 import DashboardData from "./DashboardData";
 import ForgotPasswordForm from "../forgot-password";
 import { useState, useEffect } from "react";
-import { doc, getFirestore, onSnapshot } from "firebase/firestore";
+import { doc, getFirestore, onSnapshot, getDoc } from "firebase/firestore";
 
 const theme = createTheme();
 
@@ -19,13 +19,26 @@ export default function SignInSide() {
   const db = getFirestore();
   const [forgotPasswordState, setForgotPasswordState] = useState(false);
   const [totalUsersRegistered, setTotalUsersRegistered] = useState();
+  const [totalPosts, setTotalPosts] = useState();
 
   //Todo: add tracking for messages and posts written
   useEffect(() => {
     const totalUsersRef = doc(db, "users", "userCount");
+    const postsRef = doc(db, "users", "postsMade");
+
     onSnapshot(totalUsersRef, (doc) => {
       setTotalUsersRegistered(doc.data().registered);
     });
+    const getPosts = async () => {
+      const postsSnap = await getDoc(postsRef);
+      if (postsSnap.exists()) {
+        setTotalPosts(postsSnap.data().posts);
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    };
+    getPosts();
   });
 
   return (
@@ -41,7 +54,10 @@ export default function SignInSide() {
             backgroundColor: "#F0F2F5",
           }}
         >
-          <DashboardData totalUsersRegistered={totalUsersRegistered} />
+          <DashboardData
+            totalUsersRegistered={totalUsersRegistered}
+            totalPosts={totalPosts}
+          />
         </Grid>
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box

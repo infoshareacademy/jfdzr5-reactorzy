@@ -70,6 +70,7 @@ export const CreateCommentInput = ({
     });
     e.target.content.value = "";
   };
+
   return (
     <>
       <InputContainer>
