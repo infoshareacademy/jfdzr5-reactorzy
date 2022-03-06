@@ -14,6 +14,8 @@ const InputContainer = styled.div`
   justify-content: center;
   padding: 12px 15px;
   margin-bottom: 10px;
+  margin-left: auto;
+  margin-right: auto;
   box-shadow: 2px 3px 5px grey;
 `;
 
