@@ -14,8 +14,8 @@ The project was created by two developers:\
 The Koffee app aims to gather developers who will be able to share their thoughts, ideas and problems and help each other together.
 This is social media app from developers to developers!
 
-## Live preview
-:champagne: You can also click here **https://k**offee-reactorzy.web.app/** to live preview. :champagne:
+## Live preview :rocket::rocket::rocket:
+:champagne: You can also click here **https://koffee-reactorzy.web.app/** to live preview. :champagne:
 
 ## Technologies
 Project is created with:\
@@ -37,7 +37,7 @@ Project is created with:\
 :pushpin: Messages\
 :pushpin: Filtering posts\
 :pushpin: Searching for users\
-:pushpin: New ideas, Sky is the limit!
+:pushpin: New ideas, Sky is the limit! :rocket::rocket::rocket:
 
 ## Setup
 Clone this repo and run ``` $ npm install ``` to install all dependecies.
