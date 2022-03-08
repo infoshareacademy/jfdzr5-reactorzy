@@ -19,11 +19,11 @@ This is social media app from developers to developers!
 
 ## Technologies
 Project is created with:\
-* React (styled components, hooks, react context, react router)\
-* JavaScript\
-* Firebase (Firestore, Authenticaton, Storage)\
-* HTML\
-* CSS
+:star: **React** (styled components, hooks, react context, react router)\
+:star: **JavaScript**\
+:star: **Firebase** (Firestore, Authenticaton, Storage)\
+:star: **HTML**\
+:star: **CSS**
 
 	
 ## Features
