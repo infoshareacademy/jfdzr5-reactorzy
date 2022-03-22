@@ -44,7 +44,6 @@ export const UserProfile = () => {
     }
     //   // detailsUser
   );
-  console.log(detailsUser);
   const [editMode, changeEditMode] = useState(false);
   const [avatarChanged, setAvatartChanged] = useState(null);
   const [newAvatar, setNewAvatar] = useState(null);
@@ -67,7 +66,6 @@ export const UserProfile = () => {
       avatar: docSnap.data().avatar ? docSnap.data().avatar : "",
       userID: usero,
     });
-    console.log(aboutUser);
   };
 
   useEffect(() => {
@@ -77,10 +75,6 @@ export const UserProfile = () => {
       if (user) {
         uid = user.uid;
         getDataFromFirebase(params.userID);
-        console.log(params.userID);
-        // console.log("keep user? Yes! :):):)");
-      } else {
-        // console.log("keep user? NO!!!!!!!!!!!");
       }
     });
   }, []);
@@ -107,47 +101,35 @@ export const UserProfile = () => {
     }
   };
 
-
   const handleChangeAvatar = async (event) => {
     setAvatarFile(event.target.files[0]);
     const currentAvatartStoragePath = Math.floor(Math.random() * 1000000);
-    console.log(currentAvatartStoragePath);
 
     const storageRef = ref(
       storage,
       `momentaryAvatars/${currentAvatartStoragePath}`
     );
     uploadBytes(storageRef, event.target.files[0])
-      .then((snapshot) => {
-        console.log("Uploaded a blob or file!", event.target.files[0]);
-      })
+      .then((snapshot) => {})
       .then(() => {
         getDownloadURL(
           ref(storage, `momentaryAvatars/${currentAvatartStoragePath}`)
         ).then((url) => {
           setDetailsUser({
             ...detailsUser,
-            avatar: url
+            avatar: url,
           });
-          console.log(detailsUser)
         });
       });
-      changeAvatarInFirebase(event.target.files[0]);
-      
+    changeAvatarInFirebase(event.target.files[0]);
   };
 
   const changeAvatarInFirebase = async (neew) => {
     const storageRef = ref(storage, `avatars/${user.uid}`);
-    uploadBytes(storageRef, neew)
-      .then((snapshot) => {
-        console.log("Uploaded a blob or file!", neew);
-        console.log(newAvatar)
-        setNewAvatar(neew);
-      })
-  }
-
-  console.log(uid);
-  console.log(detailsUser);
+    uploadBytes(storageRef, neew).then((snapshot) => {
+      setNewAvatar(neew);
+    });
+  };
 
   return user ? (
     <Paper elevation={3} sx={{ p: "20px" }}>
@@ -156,7 +138,8 @@ export const UserProfile = () => {
           <Avatar
             style={{ width: "300px", height: "300px" }}
             alt="avatar"
-            src={momentaryAvatar ||
+            src={
+              momentaryAvatar ||
               ((user !== null && user.uid === params.userID) ||
               uid === params.userID
                 ? detailsUser.avatar
@@ -175,7 +158,12 @@ export const UserProfile = () => {
                   <PageviewIcon />
                 </Avatar>
               </label>
-              <input style={{ display: "none" }} id="changePhoto" type="file" onChange={handleChangeAvatar}/>
+              <input
+                style={{ display: "none" }}
+                id="changePhoto"
+                type="file"
+                onChange={handleChangeAvatar}
+              />
             </div>
           ) : null}
         </AvatarContainer>

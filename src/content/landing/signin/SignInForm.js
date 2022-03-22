@@ -2,8 +2,6 @@ import React from "react";
 import { Copyright } from "../../../common/copyright";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import { NavLink } from "react-router-dom";
 import Box from "@mui/material/Box";
@@ -30,16 +28,9 @@ const SignInForm = ({ setForgotPasswordState }) => {
     const email = data.get("email");
     const password = data.get("password");
     const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log(user);
-        // ...
-      })
-      .catch((error) => {
-        setFailedAuth(true);
-      });
+    signInWithEmailAndPassword(auth, email, password).catch(() =>
+      setFailedAuth(true)
+    );
   };
   return (
     <>

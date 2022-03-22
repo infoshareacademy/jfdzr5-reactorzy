@@ -33,9 +33,6 @@ export default function SignInSide() {
       const postsSnap = await getDoc(postsRef);
       if (postsSnap.exists()) {
         setTotalPosts(postsSnap.data().posts);
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
       }
     };
     getPosts();

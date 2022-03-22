@@ -18,7 +18,6 @@ export const CreatePostModal = ({ open, setOpen }) => {
   const storage = getStorage();
   const [imageData, setImageData] = useState(null);
   const [image, setImage] = useState(null);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const date = new Date();
@@ -47,9 +46,6 @@ export const CreatePostModal = ({ open, setOpen }) => {
       const postsSnap = await getDoc(postsRef);
       if (postsSnap.exists()) {
         posts = postsSnap.data().posts;
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
       }
       await updateDoc(postRef, {
         posts: posts++,

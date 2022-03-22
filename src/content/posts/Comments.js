@@ -36,9 +36,6 @@ const Comment = ({ content, userID, timestamp }) => {
         if (docSnap.data().avatar) {
           setAvatar(docSnap.data().avatar);
         }
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
       }
     };
     fetchUserData();

@@ -110,12 +110,10 @@ export default function Post({
         }
       } else {
         // doc.data() will be undefined in this case
-        console.log("No such document!");
       }
     };
     fetchUserData();
     const unsub = onSnapshot(doc(db, "posts", postID), (doc) => {
-      console.log(doc.data());
       setCommentsList(doc.data().comments);
       setCommentsLength(
         doc.data().comments.length > 0 ? doc.data().comments.length : ""
@@ -124,7 +122,6 @@ export default function Post({
       //   doc.data().likes.length > 0 ? doc.data().likes.length : null
       // );
     });
-    console.log("hi");
   }, [picture, imgSrc, userID, db, postID]);
 
   const handleExpandClick = () => {
