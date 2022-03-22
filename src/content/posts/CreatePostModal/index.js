@@ -18,8 +18,6 @@ export const CreatePostModal = ({ open, setOpen }) => {
   const storage = getStorage();
   const [imageData, setImageData] = useState(null);
   const [image, setImage] = useState(null);
-  const [titleData, setTitleData] = useState("");
-  const [contentData, setContentData] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,10 +77,6 @@ export const CreatePostModal = ({ open, setOpen }) => {
         handleSubmit={handleSubmit}
         setImage={setImage}
         imageData={imageData}
-        contentData={contentData}
-        setContentData={setContentData}
-        titleData={titleData}
-        setTitleData={setTitleData}
       />
     </div>
   ) : (
@@ -94,10 +88,6 @@ export const CreatePostModal = ({ open, setOpen }) => {
         handleSubmit={handleSubmit}
         imageData={imageData}
         setImageData={setImageData}
-        contentData={contentData}
-        setContentData={setContentData}
-        titleData={titleData}
-        setTitleData={setTitleData}
       />
     </div>
   );
