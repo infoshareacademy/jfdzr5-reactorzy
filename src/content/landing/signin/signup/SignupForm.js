@@ -1,8 +1,6 @@
 import { useUserContext } from "../../../../services/user-context";
 import React, { useEffect, useRef, useState } from "react";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
@@ -26,7 +24,7 @@ import {
   setDoc,
   arrayUnion,
 } from "firebase/firestore";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../../index";
 
 const AvatarContainer = styled.div`
@@ -62,9 +60,6 @@ const SignupForm = ({ setErrorMessage }) => {
       totalUsers.current = doc.data().registered;
     });
   });
-
-  console.log(totalUsers.current);
-
   /* 
   const handleChangeAvatar = (event) => {
     setAvatarFile(event.target.files[0]);
@@ -78,7 +73,6 @@ const SignupForm = ({ setErrorMessage }) => {
   const handleChangeAvatar = async (event) => {
     setAvatarFile(event.target.files[0]);
     const currentAvatartStoragePath = Math.floor(Math.random() * 1000000);
-    console.log(currentAvatartStoragePath);
 
     const storageRef = ref(
       storage,
@@ -86,7 +80,6 @@ const SignupForm = ({ setErrorMessage }) => {
     );
     uploadBytes(storageRef, event.target.files[0])
       .then((snapshot) => {
-        console.log("Uploaded a blob or file!", event.target.files[0]);
       })
       .then(() => {
         getDownloadURL(
@@ -98,7 +91,6 @@ const SignupForm = ({ setErrorMessage }) => {
   };
 
   const handleChangeAboutMe = (event) => {
-    console.log(detailsUser);
     setDetailsUser({
       ...detailsUser,
       [event.target.name]: event.target.value,
@@ -126,7 +118,6 @@ const SignupForm = ({ setErrorMessage }) => {
                 const user = userCredential.user;
                 user.displayName = username;
                 updateProfile(user, { displayName: username });
-                console.log(user);
                 // Kamil - add document with user details in Firebase - 21/02/2022
                 setDoc(doc(db, "userDetails", user.uid), {
                   name: data.get("username"),
@@ -134,7 +125,6 @@ const SignupForm = ({ setErrorMessage }) => {
                   technologies: technologies,
                   about: about,
                 });
-                console.log(detailsUser);
                 // collect of users ID
                 updateDoc(doc(db, "users", "IdList"), {
                   IdList: arrayUnion(user.uid),
@@ -146,13 +136,11 @@ const SignupForm = ({ setErrorMessage }) => {
                 const storageRef = ref(storage, `avatars/${user.uid}`);
                 uploadBytes(storageRef, avatarFile)
                   .then((snapshot) => {
-                    console.log("Uploaded a blob or file!", avatarFile);
                     setAvatarFile(null);
                   })
                   .then(() => {
                     getDownloadURL(ref(storage, `avatars/${user.uid}`)).then(
                       (url) => {
-                        console.log("dodano:", url);
                         setDetailsUser({
                           // ...detailsUser,
                           name: data.get("username"),

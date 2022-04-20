@@ -113,14 +113,14 @@ export default function Post({
       }
     };
     fetchUserData();
-    const unsub = onSnapshot(doc(db, "posts", postID), (doc) => {
+    onSnapshot(doc(db, "posts", postID), (doc) => {
       setCommentsList(doc.data().comments);
       setCommentsLength(
         doc.data().comments.length > 0 ? doc.data().comments.length : ""
       );
-      // setLikesLength(
-      //   doc.data().likes.length > 0 ? doc.data().likes.length : null
-      // );
+      setLikesLength(
+        doc.data().likes.length > 0 ? doc.data().likes.length : null
+      );
     });
   }, [picture, imgSrc, userID, db, postID]);
 
@@ -224,7 +224,11 @@ export default function Post({
           <Typography variant="h5" color="text.secondary">
             {title}
           </Typography>
-          <Typography variant="body" color="text.secondary">
+          <Typography
+            variant="body"
+            color="text.secondary"
+            sx={{ whiteSpace: "pre-wrap" }}
+          >
             {content}
           </Typography>
         </CardContent>

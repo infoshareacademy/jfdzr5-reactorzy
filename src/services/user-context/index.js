@@ -54,7 +54,6 @@ export const UserContextProvider = ({ children }) => {
         getDataFromFirebase(userData.uid);
       }
       getUserIdList();
-      console.log(usersId);
       // if (userData) {
       //     const storage = getStorage();
       //     // const storageRef = ref(storage, `avatars/${userData.uid}`);
