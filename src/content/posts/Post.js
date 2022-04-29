@@ -11,6 +11,9 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import Box from "@mui/material/Box";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CommentIcon from "@mui/icons-material/Comment";
@@ -56,6 +59,7 @@ export default function Post({
   const [userName, setUserName] = useState(null);
   const [avatar, setAvatar] = useState(null);
   const [commentsList, setCommentsList] = useState(comments);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const db = getFirestore();
   const { user } = useUserContext();
@@ -164,6 +168,7 @@ export default function Post({
           width: "100%",
           margin: "10px auto",
           boxShadow: "2px 3px 10px grey",
+          position: "relative",
         }}
       >
         <CardHeader
@@ -180,9 +185,35 @@ export default function Post({
             )
           }
           action={
-            <IconButton aria-label="settings">
-              <MoreVertIcon />
-            </IconButton>
+            <>
+              <IconButton aria-label="settings">
+                <MoreVertIcon onClick={() => setSettingsOpen(!settingsOpen)} />
+              </IconButton>
+              {settingsOpen && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    right: "25px",
+                    top: "35px",
+                    display: "flex",
+                    "& > *": {
+                      m: 1,
+                    },
+                  }}
+                >
+                  <ButtonGroup
+                    orientation="vertical"
+                    aria-label="vertical contained button group"
+                    variant="contained"
+                  >
+                    <Button key="edit">Edit</Button>
+                    <Button key="delete" color="error">
+                      Delete
+                    </Button>
+                  </ButtonGroup>
+                </Box>
+              )}
+            </>
           }
           title={userName}
           subheader={
