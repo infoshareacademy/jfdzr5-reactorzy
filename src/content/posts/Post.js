@@ -185,35 +185,39 @@ export default function Post({
             )
           }
           action={
-            <>
-              <IconButton aria-label="settings">
-                <MoreVertIcon onClick={() => setSettingsOpen(!settingsOpen)} />
-              </IconButton>
-              {settingsOpen && (
-                <Box
-                  sx={{
-                    position: "absolute",
-                    right: "25px",
-                    top: "35px",
-                    display: "flex",
-                    "& > *": {
-                      m: 1,
-                    },
-                  }}
-                >
-                  <ButtonGroup
-                    orientation="vertical"
-                    aria-label="vertical contained button group"
-                    variant="contained"
+            user.uid === userID && (
+              <>
+                <IconButton aria-label="settings">
+                  <MoreVertIcon
+                    onClick={() => setSettingsOpen(!settingsOpen)}
+                  />
+                </IconButton>
+                {settingsOpen && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      right: "25px",
+                      top: "35px",
+                      display: "flex",
+                      "& > *": {
+                        m: 1,
+                      },
+                    }}
                   >
-                    <Button key="edit">Edit</Button>
-                    <Button key="delete" color="error">
-                      Delete
-                    </Button>
-                  </ButtonGroup>
-                </Box>
-              )}
-            </>
+                    <ButtonGroup
+                      orientation="vertical"
+                      aria-label="vertical contained button group"
+                      variant="contained"
+                    >
+                      <Button key="edit">Edit</Button>
+                      <Button key="delete" color="error">
+                        Delete
+                      </Button>
+                    </ButtonGroup>
+                  </Box>
+                )}
+              </>
+            )
           }
           title={userName}
           subheader={
@@ -278,11 +282,6 @@ export default function Post({
             <CommentIcon />
           </IconButton>
           <Typography variant="body">{commentsLength}</Typography>
-          {/* Add share options */}
-
-          <IconButton aria-label="share">
-            <ShareIcon />
-          </IconButton>
           {comments && (
             <ExpandMore
               expand={expanded}
