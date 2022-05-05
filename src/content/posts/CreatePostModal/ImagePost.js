@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import styled from "styled-components";
 import { Button } from "@mui/material";
 import ImageIcon from "@mui/icons-material/Image";
+import CloseIcon from "@mui/icons-material/Close";
 
 const TitleInput = styled.textarea`
   width: 100%;
@@ -40,7 +41,7 @@ const ContentInput = styled.textarea`
 `;
 
 const ImageContainer = styled.div`
-  max-height: 250px;
+  max-height: 350px;
   height: 100%;
   display: flex;
   align-items: center;
@@ -49,13 +50,14 @@ const ImageContainer = styled.div`
   padding: 10px;
   border: 1px solid grey;
   border-radius: 20px;
+  position: relative;
 `;
 
 const style = {
-  position: "absolute",
+  position: "relative",
   height: "70%",
-  minWidth: "300px",
-  minHeight: "600px",
+  minWidth: "400px",
+  minHeight: "800px",
   width: "30%",
   top: "50%",
   left: "50%",
@@ -79,7 +81,12 @@ const ImagePost = ({
   imageData,
   setImageData,
   setImage,
+  setPostData,
+  postData,
 }) => {
+  const [titleData, setTitleData] = useState(postData[0]);
+  const [contentData, setContentData] = useState(postData[1]);
+
   const handleImageUpload = (e) => {
     if (e.target.files[0]) {
       setImage(e.target.files[0]);
@@ -112,9 +119,24 @@ const ImagePost = ({
             margin: "15px 0 0",
           }}
         />
-        <form style={{ width: "100%", height: "100%" }} onSubmit={handleSubmit}>
-          <TitleInput placeholder="Post title" required name="title" />
-          <ContentInput placeholder="Post content" required name="content" />
+        <form
+          style={{ width: "100%", height: "100%", position: "relative" }}
+          onSubmit={handleSubmit}
+        >
+          <TitleInput
+            value={titleData}
+            onInput={(e) => setTitleData(e.target.value)}
+            placeholder="Post title"
+            required
+            name="title"
+          />
+          <ContentInput
+            value={contentData}
+            onInput={(e) => setContentData(e.target.value)}
+            placeholder="Post content"
+            required
+            name="content"
+          />
           <ImageContainer>
             {imageData ? (
               <img
@@ -128,6 +150,9 @@ const ImagePost = ({
             ) : (
               <p>Failed to load</p>
             )}
+            <CloseIcon
+              sx={{ position: "absolute", right: "5px", top: "5px" }}
+            />
           </ImageContainer>
           <div
             style={{

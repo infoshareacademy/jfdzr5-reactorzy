@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
@@ -67,7 +67,12 @@ const TextPost = ({
   setImageData,
   imageData,
   setImage,
+  postData,
+  setPostData,
 }) => {
+  const [titleData, setTitleData] = useState(postData[0]);
+  const [contentData, setContentData] = useState(postData[1]);
+
   const handleImageUpload = (e) => {
     if (e.target.files[0]) {
       setImage(e.target.files[0]);
@@ -77,6 +82,7 @@ const TextPost = ({
       };
       reader.readAsDataURL(e.target.files[0]);
     }
+    setPostData([titleData, contentData]);
   };
   return (
     <Modal
@@ -101,9 +107,21 @@ const TextPost = ({
           }}
         />
         <form style={{ width: "100%", height: "100%" }} onSubmit={handleSubmit}>
-          <TitleInput placeholder="Post title" required name="title" />
+          <TitleInput
+            value={titleData}
+            onInput={(e) => setTitleData(e.target.value)}
+            placeholder="Post title"
+            required
+            name="title"
+          />
 
-          <ContentInput placeholder="Post content" required name="content" />
+          <ContentInput
+            value={contentData}
+            onInput={(e) => setContentData(e.target.value)}
+            placeholder="Post content"
+            required
+            name="content"
+          />
           <div style={{ display: "flex", justifyContent: "center" }}>
             <label htmlFor="upload-button">
               <input
